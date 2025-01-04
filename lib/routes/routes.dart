@@ -37,6 +37,12 @@ class fRoutes {
   static List sideMenuItems = [
     dashboard,
     media,
+    categories,
+    brands,
+    banners,
+    products,
+    customers,
+    orders
     //firstScreen,
     //     secondScreen,
     //     responsiveDesignScreen

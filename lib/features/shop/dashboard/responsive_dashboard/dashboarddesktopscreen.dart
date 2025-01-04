@@ -1,14 +1,13 @@
+import 'package:favour_adminpanel/app.dart';
 import 'package:favour_adminpanel/common/styles/frounded_container.dart';
 import 'package:favour_adminpanel/features/shop/dashboard/table/data_table.dart';
 import 'package:favour_adminpanel/features/shop/dashboard/widget/weeklysales_widget.dart';
+import 'package:favour_adminpanel/features/shop/products/controller/product_image_controller.dart';
 import 'package:favour_adminpanel/utilis/constants/sizes.dart';
-import 'package:favour_adminpanel/utilis/device/device_utility.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import '../../../../utilis/constants/colors.dart';
-import '../controller/dashboard_controller.dart';
 import '../widget/fdashboard_card.dart';
 import '../widget/orderstatus_piechart.dart';
 
@@ -17,6 +16,7 @@ class Dashboarddesktopscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(ProductImageController());
     return Scaffold(
         body: SingleChildScrollView(
             child: Padding(
@@ -29,6 +29,26 @@ class Dashboarddesktopscreen extends StatelessWidget {
                         "Dashboard",
                         style: Theme.of(context).textTheme.headlineLarge,
                       ),
+                      OutlinedButton(
+                          style: ElevatedButton.styleFrom(
+                              side: BorderSide(color: Colors.white),
+                              backgroundColor: fColors.primary,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10))),
+                          onPressed: () => controller.selectedThumbnailImage(),
+                          child: Text("Select Single Image",style: TextStyle(color: Colors.white),)),
+                      const SizedBox(
+                        height: fSizes.spaceBtwSections,
+                      ),
+                      OutlinedButton(
+                          style: ElevatedButton.styleFrom(
+                              side: BorderSide(color: Colors.white),
+                              backgroundColor: fColors.primary,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10))),
+                          onPressed: () =>
+                              controller.selectedMultipleProductImages(),
+                          child: Text("Select Multiple Single Image",style: TextStyle(color: Colors.white))),
                       const SizedBox(
                         height: fSizes.spaceBtwSections,
                       ),
@@ -38,37 +58,37 @@ class Dashboarddesktopscreen extends StatelessWidget {
                         children: [
                           Expanded(
                               child: fDashboardCard(
-                                stats: 25,
-                                title: "Sales total",
-                                subTitle: '\$356',
-                              )),
+                            stats: 25,
+                            title: "Sales total",
+                            subTitle: '\$356',
+                          )),
                           SizedBox(
                             width: fSizes.spaceBtwItems,
                           ),
                           Expanded(
                               child: fDashboardCard(
-                                stats: 25,
-                                title: "Sales total",
-                                subTitle: '\$356',
-                              )),
+                            stats: 25,
+                            title: "Sales total",
+                            subTitle: '\$356',
+                          )),
                           SizedBox(
                             width: fSizes.spaceBtwItems,
                           ),
                           Expanded(
                               child: fDashboardCard(
-                                stats: 25,
-                                title: "Sales total",
-                                subTitle: '\$356',
-                              )),
+                            stats: 25,
+                            title: "Sales total",
+                            subTitle: '\$356',
+                          )),
                           SizedBox(
                             width: fSizes.spaceBtwItems,
                           ),
                           Expanded(
                               child: fDashboardCard(
-                                stats: 25,
-                                title: "Sales total",
-                                subTitle: '\$356',
-                              )),
+                            stats: 25,
+                            title: "Sales total",
+                            subTitle: '\$356',
+                          )),
                         ],
                       ),
 
@@ -92,10 +112,18 @@ class Dashboarddesktopscreen extends StatelessWidget {
                                 //ORDERS
                                 fRoundedContainer(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text("Recent Orders",style: Theme.of(context).textTheme.headlineSmall,),
-                                      const SizedBox(height: fSizes.spaceBtwSections,),
+                                      Text(
+                                        "Recent Orders",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headlineSmall,
+                                      ),
+                                      const SizedBox(
+                                        height: fSizes.spaceBtwSections,
+                                      ),
                                       const DashboardOrderTable()
                                     ],
                                   ),
@@ -111,11 +139,8 @@ class Dashboarddesktopscreen extends StatelessWidget {
                           Expanded(child: OrderstatusPiechart()),
 
                           fRoundedContainer(),
-
                         ],
                       )
                     ]))));
   }
-
-
 }

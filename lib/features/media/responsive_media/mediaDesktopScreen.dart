@@ -54,7 +54,7 @@ class Mediadesktopscreen extends StatelessWidget {
 
 
             /// Media
-            MediaContent()
+            MediaContent(allowSelection: false,allowMultipleSection: false,)
 
           ],
         ),),

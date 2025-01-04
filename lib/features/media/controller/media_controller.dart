@@ -4,6 +4,9 @@ import 'package:favour_adminpanel/common/widgets/loaders/floaders.dart';
 import 'package:favour_adminpanel/common/widgets/texts/text_strings.dart';
 import 'package:favour_adminpanel/features/media/model/image_model.dart';
 import 'package:favour_adminpanel/features/media/repository/media_repositroy.dart';
+import 'package:favour_adminpanel/features/media/widget/media_content.dart';
+import 'package:favour_adminpanel/features/media/widget/media_uploaded.dart';
+import 'package:favour_adminpanel/utilis/constants/colors.dart';
 import 'package:favour_adminpanel/utilis/constants/enums.dart';
 import 'package:favour_adminpanel/utilis/constants/image_strings.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +16,7 @@ import 'dart:html' as html; // For web
 import 'package:universal_html/html.dart' as html;
 
 import '../../../common/widgets/dialog/fdialog.dart';
+import '../../../common/widgets/loaders/fcircular_loader.dart';
 import '../../../utilis/constants/sizes.dart';
 
 class MediaController extends GetxController {
@@ -36,33 +40,40 @@ class MediaController extends GetxController {
   final RxList<ImageModel> allUserImages = <ImageModel>[].obs;
   final MediaRepository mediaRepository = MediaRepository();
 
-
   // Get Images
   void getMediaImages() async {
-    try{
+    try {
       loading.value = true;
 
       RxList<ImageModel> targetList = <ImageModel>[].obs;
 
-      if(selectedPath.value == MediaCategory.banners && allBannerImages.isEmpty){
+      if (selectedPath.value == MediaCategory.banners &&
+          allBannerImages.isEmpty) {
         targetList = allBannerImages;
-      } else if (selectedPath.value == MediaCategory.Brands && allBannerImages.isEmpty){
+      } else if (selectedPath.value == MediaCategory.Brands &&
+          allBannerImages.isEmpty) {
         targetList = allBrandImages;
-      } else if (selectedPath.value == MediaCategory.category && allBannerImages.isEmpty){
+      } else if (selectedPath.value == MediaCategory.category &&
+          allBannerImages.isEmpty) {
         targetList = allCategoryImages;
-      } else if (selectedPath.value == MediaCategory.Products && allBannerImages.isEmpty){
+      } else if (selectedPath.value == MediaCategory.Products &&
+          allBannerImages.isEmpty) {
         targetList = allProductImages;
-      } else if (selectedPath.value == MediaCategory.Users && allBannerImages.isEmpty){
+      } else if (selectedPath.value == MediaCategory.Users &&
+          allBannerImages.isEmpty) {
         targetList = allUserImages;
       }
 
-      final images = await mediaRepository.fetchImagesDatabase(selectedPath.value, initialLoadCount);
+      final images = await mediaRepository.fetchImagesDatabase(
+          selectedPath.value, initialLoadCount);
       targetList.assignAll(images);
 
       loading.value = false;
     } catch (e) {
       loading.value = false;
-      fLoaders.errorSnackBar(title: "Oh Snap", message:  "Unable to fetch Images, Something went wrong. Try again");
+      fLoaders.errorSnackBar(
+          title: "Oh Snap",
+          message: "Unable to fetch Images, Something went wrong. Try again");
     }
   }
 
@@ -71,28 +82,36 @@ class MediaController extends GetxController {
       loading.value = true;
       RxList<ImageModel> targetList = <ImageModel>[].obs;
 
-      if(selectedPath.value == MediaCategory.banners){
+      if (selectedPath.value == MediaCategory.banners) {
         targetList = allBannerImages;
-      } else if (selectedPath.value == MediaCategory.Brands && allBannerImages.isEmpty){
+      } else if (selectedPath.value == MediaCategory.Brands &&
+          allBannerImages.isEmpty) {
         targetList = allBrandImages;
-      } else if (selectedPath.value == MediaCategory.category && allBannerImages.isEmpty){
+      } else if (selectedPath.value == MediaCategory.category &&
+          allBannerImages.isEmpty) {
         targetList = allCategoryImages;
-      } else if (selectedPath.value == MediaCategory.Products && allBannerImages.isEmpty){
+      } else if (selectedPath.value == MediaCategory.Products &&
+          allBannerImages.isEmpty) {
         targetList = allProductImages;
-      } else if (selectedPath.value == MediaCategory.Users && allBannerImages.isEmpty){
+      } else if (selectedPath.value == MediaCategory.Users &&
+          allBannerImages.isEmpty) {
         targetList = allUserImages;
       }
-      final images = await mediaRepository.loadMoreImageFromDatabase(selectedPath.value, initialLoadCount, targetList.last.createdAt
-      ?? DateTime.now());
+      final images = await mediaRepository.loadMoreImageFromDatabase(
+          selectedPath.value,
+          initialLoadCount,
+          targetList.last.createdAt ?? DateTime.now());
       targetList.addAll(images);
 
       loading.value = false;
     } catch (e) {
       loading.value = false;
-      fLoaders.errorSnackBar(title: "Oh Snap", message:  "Unable to fetch Images, Something went wrong. Try again");
-
+      fLoaders.errorSnackBar(
+          title: "Oh Snap",
+          message: "Unable to fetch Images, Something went wrong. Try again");
     }
   }
+
   /// Select images locally via file picker
   Future<void> selectLocalImages() async {
     final files = await dropzoneController.pickFiles(
@@ -147,7 +166,8 @@ class MediaController extends GetxController {
         confirmText: "Upload",
         onConfirm: () async => await uploadImages(),
         content:
-            "Are you sure you want to upload all the all the Images in ${selectedPath.value.name.toUpperCase()} folder?");
+        "Are you sure you want to upload all the all the Images in ${selectedPath
+            .value.name.toUpperCase()} folder?");
   }
 
   uploadImages() async {
@@ -192,10 +212,12 @@ class MediaController extends GetxController {
         final DropzoneFileInterface imageFile = selectedImage.file!;
 
         // Convert DropzoneFileInterface to Uint8List
-        final Uint8List fileData = await dropzoneController.getFileData(imageFile);
+        final Uint8List fileData =
+        await dropzoneController.getFileData(imageFile);
 
         // Upload image to the storage
-        final ImageModel uploadedImage = await mediaRepository.uploadImageFileInStorage(
+        final ImageModel uploadedImage =
+        await mediaRepository.uploadImageFileInStorage(
           file: fileData, // Pass the Uint8List file data
           path: getSelectedPath(),
           imageName: selectedImage.filename,
@@ -203,7 +225,8 @@ class MediaController extends GetxController {
 
         // Upload metadata to FireStore
         uploadedImage.mediaCategory = selectedCategory.name;
-        final id = await mediaRepository.uploadImageFileInDatabase(uploadedImage);
+        final id =
+        await mediaRepository.uploadImageFileInDatabase(uploadedImage);
 
         uploadedImage.id = id;
 
@@ -228,25 +251,26 @@ class MediaController extends GetxController {
     showDialog(
         context: Get.context!,
         barrierDismissible: false,
-        builder: (context) => PopScope(
-            canPop: false,
-            child: AlertDialog(
-              title: const Text("Uploading Images"),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Image.asset(
-                    fImages.Animation1,
-                    height: 300,
-                    width: 300,
+        builder: (context) =>
+            PopScope(
+                canPop: false,
+                child: AlertDialog(
+                  title: const Text("Uploading Images"),
+                  content: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        fImages.Animation1,
+                        height: 300,
+                        width: 300,
+                      ),
+                      const SizedBox(
+                        height: fSizes.spaceBtwItems,
+                      ),
+                      const Text("Sit Tight, Your Images are Uploading...")
+                    ],
                   ),
-                  const SizedBox(
-                    height: fSizes.spaceBtwItems,
-                  ),
-                  const Text("Sit Tight, Your Images are Uploading...")
-                ],
-              ),
-            )));
+                )));
   }
 
   String getSelectedPath() {
@@ -269,8 +293,125 @@ class MediaController extends GetxController {
         break;
       default:
         path = 'Others';
-        break;
+    //  break;
     }
     return path; // Explicitly return the path
   }
+
+  // Popup Confirmation to remove cloud image
+  void removeCloudImageConfirmation(ImageModel image) {
+    // Delete Configuration
+    fDialogs.defaultDialog(
+        context: Get.context!,
+        content: "Are you sure you want to delete this image?",
+        onConfirm: () {
+          Get.back();
+
+          removeCloudImage(image);
+        });
+  }
+
+  Future<void> removeCloudImage(ImageModel image) async {
+    try {
+      // Close the removeCloudImageConfirmation() Dialog
+      Get.back();
+
+      // Show Loader
+      Get.defaultDialog(
+          title: "",
+          barrierDismissible: false,
+          backgroundColor: Colors.transparent,
+          content: PopScope(
+              child: SizedBox(
+                width: 150,
+                height: 150,
+                child: fCircularLoadeer(),
+              )));
+
+      // Delete Image
+      await mediaRepository.deleteFromStorage(image);
+
+      // Get the corresponding list to update
+      RxList<ImageModel> targetList;
+
+      // Check the selected category and the corresponding list
+      switch (selectedPath.value) {
+        case MediaCategory.banners:
+          targetList = allBannerImages;
+          break;
+        case MediaCategory.Brands:
+          targetList = allBrandImages;
+          break;
+        case MediaCategory.category:
+          targetList = allCategoryImages;
+          break;
+        case MediaCategory.Products:
+          targetList = allProductImages;
+          break;
+        case MediaCategory.Users:
+          targetList = allUserImages;
+          break;
+        default:
+          return; // Explicitly return the path
+      }
+
+      // Remove from the list
+      targetList.remove(image);
+
+      update();
+
+      fFullScreenLoader.stopLoading();
+      fLoaders.successSnackBar(
+          title: "Image Deleted",
+          message: "Image successfully deleted from your cloud storage");
+    } catch (e) {
+      fFullScreenLoader.stopLoading();
+      fLoaders.errorSnackBar(title: "Oh Snap", message: e.toString());
+    }
+  }
+
+  Future<List<ImageModel>?> selectedImageFromMedia({
+    List<String>? selectedUrls,
+    bool allowSelected = true,
+    bool multipleSelection = false,
+  }) async {
+    showImagesUploadSection.value = true;
+
+    List<ImageModel>? selectedImages = await Get.bottomSheet<List<ImageModel>>(
+      isScrollControlled: true, // Allow full height for the bottom sheet
+      backgroundColor: fColors.white,
+      FractionallySizedBox(
+        heightFactor: 1, // Full height
+        widthFactor: 1, // Full width
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(fSizes.defaultSpace),
+            child: Column(
+              children: [
+                // Drag indicator
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 10.0),
+                  width: 40.0,
+                  height: 4.0,
+                  decoration: BoxDecoration(
+                    color: fColors.grey, // Color of the drag indicator
+                    borderRadius: BorderRadius.circular(2.0),
+                  ),
+                ),
+                const MediaUploaded(), // Top section
+                MediaContent(
+                  allowSelection: allowSelected,
+                  alreadySelectedUrls: selectedUrls ?? [],
+                  allowMultipleSection: multipleSelection,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    return selectedImages;
+  }
+
 }

@@ -18,7 +18,7 @@ class MediaRepository extends GetxController {
 
   /// Upload any Image using File
   Future<ImageModel> uploadImageFileInStorage({
-    required Uint8List file, // Use Uint8List instead of DropzoneFileInterface
+    required Uint8List file,
     required String path,
     required String imageName,
   }) async {
@@ -26,8 +26,33 @@ class MediaRepository extends GetxController {
       // Reference to the storage location
       final Reference ref = _storage.ref('$path/$imageName');
 
-      // Upload file
-      await ref.putData(file);
+      // Initialize content type and debug logging
+      String contentType = 'application/octet-stream'; // Default fallback
+      print('Uploading image: $imageName');
+
+      // Check file extensions and set content type accordingly
+      if (imageName.endsWith('.jpg') || imageName.endsWith('.jpeg')) {
+        contentType = 'image/jpeg';
+      } else if (imageName.endsWith('.png')) {
+        contentType = 'image/png';
+      } else if (imageName.endsWith('.gif')) {
+        contentType = 'image/gif';
+      } else if (imageName.endsWith('.bmp')) {
+        contentType = 'image/bmp';
+      } else if (imageName.endsWith('.webp')) {
+        contentType = 'image/webp';
+      } else {
+        print('Unknown file type for image: $imageName, using default content type');
+      }
+
+      // Log the determined content type for debugging
+      print('Using content type: $contentType');
+
+      // Upload file with content type metadata
+      await ref.putData(
+        file,
+        SettableMetadata(contentType: contentType),
+      );
 
       // Get download URL
       final String downloadURL = await ref.getDownloadURL();
@@ -51,6 +76,8 @@ class MediaRepository extends GetxController {
       throw e.toString();
     }
   }
+
+
 
   // Upload Image data in Firestore
   Future<String> uploadImageFileInDatabase(ImageModel image) async {
@@ -112,5 +139,23 @@ try{
 } catch (e) {
   throw e.toString();
 }
+  }
+
+  // Delete file from Firebase Storage and corresponding document from Firestore
+  Future<void> deleteFromStorage(ImageModel image) async {
+    try {
+
+      await FirebaseStorage.instance.ref(image.fullPath).delete();
+      await FirebaseFirestore.instance.collection("Images").doc(image.id).delete();
+
+    }  on FirebaseException catch (e) {
+      throw e.message!;
+    } on SocketException catch (e) {
+      throw e.message;
+    } on PlatformException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      throw e.toString();
+    }
   }
 }

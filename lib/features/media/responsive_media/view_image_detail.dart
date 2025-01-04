@@ -2,6 +2,7 @@ import 'package:clipboard/clipboard.dart';
 import 'package:favour_adminpanel/common/styles/frounded_container.dart';
 import 'package:favour_adminpanel/common/styles/frounded_image.dart';
 import 'package:favour_adminpanel/common/widgets/loaders/floaders.dart';
+import 'package:favour_adminpanel/features/media/controller/media_controller.dart';
 import 'package:favour_adminpanel/features/media/model/image_model.dart';
 import 'package:favour_adminpanel/utilis/constants/colors.dart';
 import 'package:favour_adminpanel/utilis/constants/enums.dart';
@@ -43,7 +44,8 @@ class ImagePopUp extends StatelessWidget {
                           width: fDeviceUtilis.isDesktopScreen(context)
                               ? MediaQuery.of(context).size.width * 0.4
                               : double.infinity,
-                          imageType: ImageType.network,  padding: fSizes.chi,
+                          imageType: ImageType.network,
+                          padding: fSizes.chi,
                         ),
                       ),
                       Positioned(
@@ -79,13 +81,13 @@ class ImagePopUp extends StatelessWidget {
                       style: Theme.of(context).textTheme.titleSmall,
                     )),
                     Expanded(
-                      flex: 2,
+                        flex: 2,
                         child: Text(
-                      image.url,
-                      style: Theme.of(context).textTheme.titleSmall,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    )),
+                          image.url,
+                          style: Theme.of(context).textTheme.titleSmall,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        )),
                     Expanded(
                         child: OutlinedButton(
                             onPressed: () {
@@ -96,7 +98,9 @@ class ImagePopUp extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(height: fSizes.spaceBtwSections,),
+                const SizedBox(
+                  height: fSizes.spaceBtwSections,
+                ),
 
                 //Display a button to delete the image.
                 Row(
@@ -104,7 +108,13 @@ class ImagePopUp extends StatelessWidget {
                   children: [
                     SizedBox(
                       width: 300,
-                      child: TextButton(onPressed: (){}, child: const Text("Delete Image",style: TextStyle(color: Colors.red),)),
+                      child: TextButton(
+                          onPressed: () => MediaController.instance
+                              .removeCloudImageConfirmation(image),
+                          child: const Text(
+                            "Delete Image",
+                            style: TextStyle(color: Colors.red),
+                          )),
                     )
                   ],
                 )

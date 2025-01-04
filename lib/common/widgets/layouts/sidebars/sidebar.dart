@@ -56,6 +56,31 @@ class fSidebar extends StatelessWidget {
                       icon: Iconsax.image,
                       itemName: "Media",
                     ),
+                    FMenuItem(
+                      route: fRoutes.categories,
+                      icon: Iconsax.category,
+                      itemName: "Categories",
+                    ),
+                    FMenuItem(
+                      route: fRoutes.brands,
+                      icon: Iconsax.dcube,
+                      itemName: "Brands",
+                    ),
+                    FMenuItem(
+                      route: fRoutes.banners,
+                      icon: Iconsax.picture_frame,
+                      itemName: "Banners",
+                    ),
+                    FMenuItem(
+                      route: fRoutes.products,
+                      icon: Iconsax.shopping_bag,
+                      itemName: "Products",
+                    ),
+                    FMenuItem(
+                      route: "logout",
+                      icon: Iconsax.logout,
+                      itemName: "Logout",
+                    ),
                   ],
                 ),
               )

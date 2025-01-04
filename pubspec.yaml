@@ -59,6 +59,7 @@ dependencies:
   data_table_2:
   url_strategy:
 
+
   # Iconsax
   iconsax:
   file_picker:
@@ -74,6 +75,7 @@ dependencies:
   firebase_core:
   cloud_firestore:
   firebase_storage:
+  flutter_typeahead:
 
 
 
