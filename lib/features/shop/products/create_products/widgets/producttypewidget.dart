@@ -8,19 +8,22 @@ class ProductTypeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text("Product Type",style: Theme.of(context).textTheme.headlineSmall,),
-        const SizedBox(width: fSizes.spaceBtwItems,),
-       // Radio Button For Single Product Type
-        RadioMenuButton(value: ProductType.single, groupValue: ProductType.single, onChanged: (value){}, child: Text("Single")),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          Text("Product Type",style: Theme.of(context).textTheme.headlineSmall,),
+          const SizedBox(width: fSizes.spaceBtwItems,),
+         // Radio Button For Single Product Type
+          RadioMenuButton(value: ProductType.single, groupValue: ProductType.single, onChanged: (value){}, child: Text("Single")),
 
-        // Radio Button For Variable Product Type
-        RadioMenuButton(value: ProductType.variable, groupValue: ProductType.single, onChanged: (value){}, child: Text("Variable")),
+          // Radio Button For Variable Product Type
+          RadioMenuButton(value: ProductType.variable, groupValue: ProductType.single, onChanged: (value){}, child: Text("Variable")),
 
 
 
-      ],
+        ],
+      ),
     );
   }
 }

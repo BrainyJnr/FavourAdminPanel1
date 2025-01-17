@@ -12,17 +12,19 @@ class fCircular_Images extends StatelessWidget {
   const fCircular_Images({
     super.key,
 
-    this.fit = BoxFit.cover,
     this.image,
     this.overlayColor,
     this.memoryImage,
     this.backgroundColor,
     this.file,
     this.width = 56,
+    this.fit = BoxFit.cover,
     this.imageType = ImageType.asset,
     AssetImage = false,
     this.height = 56,
-    this.padding = fSizes.sm
+    this.padding = fSizes.sm,
+    this.borderRadius = 100,
+
 
 
   });
@@ -30,6 +32,7 @@ class fCircular_Images extends StatelessWidget {
   final BoxFit? fit;
   final String? image;
   final File? file;
+  final double borderRadius;
   final ImageType? imageType;
   final Uint8List? memoryImage;
   final Color? overlayColor;
@@ -38,15 +41,17 @@ class fCircular_Images extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        width: width,
-        height: height,
-        padding:  EdgeInsets.all(padding),
-        decoration: BoxDecoration(
-        color: backgroundColor ?? (Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white),
-            borderRadius: BorderRadius.circular(1)
-        ),
-        child: _buildImageWidget()
+    return ClipRect(
+      child: Container(
+          width: width,
+          height: height,
+          padding:  EdgeInsets.all(padding),
+          decoration: BoxDecoration(
+          color: backgroundColor ?? (Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white),
+              borderRadius: BorderRadius.circular(100)
+          ),
+          child: _buildImageWidget()
+      ),
     );
   }
 

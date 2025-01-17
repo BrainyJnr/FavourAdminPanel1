@@ -17,31 +17,36 @@ class DashboardController extends GetxController {
         status: OrderStatus.processing,
         totalAmount: 245,
         orderDate: DateTime(2024, 5, 20),
-        deliveryDate: DateTime(2024, 5, 20)),
+        deliveryDate: DateTime(2024, 5, 20),
+    items: []),
     OrderModel(
         id: "uth433",
         status: OrderStatus.shipped,
         totalAmount: 245,
         orderDate: DateTime(2024, 11, 24),
-        deliveryDate: DateTime(2024, 11, 24)),
+        deliveryDate: DateTime(2024, 11, 24),
+    items: []),
     OrderModel(
         id: "yyy433",
         status: OrderStatus.delivered,
         totalAmount: 245,
         orderDate: DateTime(2024, 11, 25),
-        deliveryDate: DateTime(2024, 11, 25)),
+        deliveryDate: DateTime(2024, 11, 25),
+    items: []),
     OrderModel(
         id: "gcf433",
         status: OrderStatus.delivered,
         totalAmount: 200,
         orderDate: DateTime(2024, 11, 27),
-        deliveryDate: DateTime(2024, 11, 27)),
+        deliveryDate: DateTime(2024, 11, 27),
+    items: []),
     OrderModel(
         id: "cw2e03",
         status: OrderStatus.delivered,
         totalAmount: 245,
         orderDate: DateTime(2024, 11, 26),
-        deliveryDate: DateTime(2024, 11, 26)),
+        deliveryDate: DateTime(2024, 11, 26),
+    items: []),
   ];
 
   @override
@@ -121,6 +126,8 @@ class OrderModel {
   final double totalAmount;
   final DateTime orderDate;
   final String paymentMethod;
+  final List<CartItemModel> items;
+
 
   // final AddressModel? address;
   final DateTime? deliveryDate;
@@ -128,6 +135,7 @@ class OrderModel {
   // final List<CartItemModel> items;
 
   OrderModel({
+    required this.items,
     required this.id,
     this.userId = "",
     required this.status,
@@ -157,6 +165,7 @@ class OrderModel {
       "userid": userId,
       "status": status.toString(),
       "totalAmount": totalAmount,
+      "items": items.map((item) => item.toJson()).toList(),
       "orderDate": orderDate,
       "paymentMethod": paymentMethod,
       // "address": address?.toJson(),
@@ -176,6 +185,14 @@ class OrderModel {
       totalAmount: data["totalAmount"] as double,
       orderDate: (data["orderDate"] as Timestamp).toDate(),
       paymentMethod: data["paymentMethod"] as String,
+
+      deliveryDate: data["deliveryDate"] == null
+          ? null
+          : (data["deliveryDate"] as Timestamp).toDate(),
+      items: (data["items"] as List<dynamic>)
+          .map((itemData) =>
+          CartItemModel.fromJson(itemData as Map<String, dynamic>))
+          .toList(),
       //address: AddressModel.fromMap(data["address"] as Map<String, dynamic>),
       //       deliveryDate: data["deliveryDate"] == null
       //           ? null
@@ -184,6 +201,64 @@ class OrderModel {
       //           .map((itemData) =>
       //           CartItemModel.fromJson(itemData as Map<String, dynamic>))
       //           .toList(),
+    );
+  }
+}
+
+class CartItemModel {
+  String productId;
+  String title;
+  double price;
+  String? image;
+  int quantity;
+  int totalAmount;
+  String variationId;
+  String? brandName;
+  Map<String, String>? selectedVariation;
+
+  /// Controller
+  CartItemModel({
+    required this.productId,
+    required this.quantity,
+    required this.totalAmount,
+    this.variationId = "",
+    this.image,
+    this.price = 0.0,
+    this.title = "",
+    this.brandName,
+    this.selectedVariation,
+  });
+
+  /// Empty Cart
+  static CartItemModel empty() => CartItemModel(productId: "", quantity: 0, totalAmount: 0);
+
+  /// Convert a CartItem to a JSON Map
+  Map<String, dynamic> toJson() {
+    return {
+      "productId": productId,
+      "title": title,
+      "price": price,
+      "image": image,
+      "totalAmount": totalAmount,
+      "quantity": quantity,
+      "variationId": variationId,
+      "brandName": brandName,
+      "selectedVariation": selectedVariation,
+    };
+  }
+
+  /// Create a CartItem from a JSON Map
+  factory CartItemModel.fromJson(Map<String, dynamic> json) {
+    return CartItemModel(
+      productId: json["productId"],
+      title: json["title"],
+      price: json["price"]?.toDouble(),
+      image: json["image"] ,
+      quantity: json["quantity"],
+      totalAmount: json["totalAmount"],
+      variationId: json["variationId"],
+      brandName: json["brandName"],
+      selectedVariation: json["selectedVariation"] != null ? Map<String, String>.from(json["selectedVariation"]) : null,
     );
   }
 }

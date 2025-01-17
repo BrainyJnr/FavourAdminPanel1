@@ -7,6 +7,7 @@ import '../../../../../common/widgets/breadcrumbs/breadcrumb_with_heading.dart';
 import '../../../../../common/widgets/data_table/table_header.dart';
 import '../../../../../routes/routes.dart';
 import '../../../../../utilis/constants/sizes.dart';
+import '../../../controller/category_controller.dart';
 import '../table/category_table.dart';
 
 class CategoryTabletscreen extends StatelessWidget {
@@ -14,6 +15,7 @@ class CategoryTabletscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CategoryController());
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -30,7 +32,11 @@ class CategoryTabletscreen extends StatelessWidget {
                 child: Column(
                   children: [
                     // Table Header
-                    TableHeader(buTTonText: "Create New Category",onPressed: () => Get.toNamed(fRoutes.createCategory),),
+                    TableHeader(buTTonText: "Create New Category",
+                      onPressed: () => Get.toNamed(fRoutes.createCategory),
+                    searchController: controller.searchTextController,
+                      searchChanged: (query) => controller.searchQuery(query),
+                    ),
                     SizedBox(
                       height: fSizes.spaceBtwItems,
                     ),

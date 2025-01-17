@@ -21,18 +21,21 @@ class ProductVariations extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Product Variations Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Product Variations",
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                TextButton(
-                  onPressed: () {},
-                  child: Text("Remove Variations"),
-                ),
-              ],
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Product Variations",
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: Text("Remove Variations"),
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: fSizes.spaceBtwItems,

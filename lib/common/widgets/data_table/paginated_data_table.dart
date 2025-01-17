@@ -65,7 +65,6 @@ class fPaginatedDataTable extends StatelessWidget {
             showFirstLastButtons: true,
             renderEmptyRowsInTheEnd: false,
             onRowsPerPageChanged: (noOfRows){},
-            sortColumnIndex: sortColumnIndex,
             headingTextStyle: Theme.of(context).textTheme.titleMedium,
             headingRowColor: MaterialStateProperty.resolveWith((state) => fColors.primaryBackground),
             empty: fAnimationLoaderWidget(text: "Nothing Found", image: fImages.Animation1,height: 200,width: 200),
@@ -76,6 +75,10 @@ class fPaginatedDataTable extends StatelessWidget {
               )
 
             ),
+
+            /// SORTTING
+            sortAscending: sortAscending,
+            sortColumnIndex: sortColumnIndex,
             sortArrowBuilder: (bool ascending, bool sorted) {
               if(sorted){
                 return Icon(ascending? Iconsax.arrow_up_3 : Iconsax.arrow_down, size: fSizes.iconSm,);

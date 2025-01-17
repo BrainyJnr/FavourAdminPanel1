@@ -30,9 +30,14 @@ class fRoutes {
   static const customerDetails = '/customerDetails';
 
   static const orders = '/orders';
+  static const ordersDetails = '/ordersDetails';
 
   static const responsiveDesignScreen = '/responsiveDesignScreen';
   static const desktop = '/desktop';
+
+  static const coupons = '/coupons';
+  static const profile = '/profile';
+  static const settings = '/settings';
 
   static List sideMenuItems = [
     dashboard,
@@ -42,7 +47,10 @@ class fRoutes {
     banners,
     products,
     customers,
-    orders
+    orders,
+    profile,
+    settings,
+    coupons,
     //firstScreen,
     //     secondScreen,
     //     responsiveDesignScreen

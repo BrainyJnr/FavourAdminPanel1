@@ -1,5 +1,6 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:favour_adminpanel/common/styles/frounded_image.dart';
+import 'package:favour_adminpanel/features/shop/controller/category_controller.dart';
 import 'package:favour_adminpanel/routes/routes.dart';
 import 'package:favour_adminpanel/utilis/constants/enums.dart';
 import 'package:favour_adminpanel/utilis/constants/image_strings.dart';
@@ -13,8 +14,11 @@ import '../../../../../utilis/constants/colors.dart';
 import '../../../../../utilis/constants/sizes.dart';
 
 class CategoryRows extends DataTableSource {
+  final controller = CategoryController.instance;
   @override
   DataRow? getRow(int index) {
+    final category = controller.filteredItems[index];
+    final parentCategory = controller.allItems.firstWhereOrNull((item) => item.id == category.parentId);
     return DataRow2(
         cells: [
           DataCell(
@@ -24,13 +28,13 @@ class CategoryRows extends DataTableSource {
                     width: 50,
                     height: 50,
                     padding: fSizes.sm,
-                    image: fImages.Acer,
+                    image: category.image,
                     imageType: ImageType.network,
                     borderRadius: fSizes.borderRadiusMd,
                     backgroundColor: fColors.primaryBackground,
                   ),
                   const SizedBox(width: fSizes.spaceBtwItems,),
-                  Expanded(child: Text("Name",
+                  Expanded(child: Text( category.name,
                     style: Theme
                         .of(Get.context!)
                         .textTheme
@@ -40,11 +44,11 @@ class CategoryRows extends DataTableSource {
                 ],
               )
           ),
-          DataCell(Text("Parent")),
-          DataCell(Icon(Iconsax.heart5,color: fColors.primary,)),
-          DataCell(Text(DateTime.now().toString(),)),
+          DataCell(Text(parentCategory != null ? parentCategory.name : "")),
+          DataCell(category.isFeatured ? const Icon(Iconsax.heart5,color: fColors.primary,) : const Icon(Iconsax.heart)),
+          DataCell(Text(category.createdAt == null ? "" : category.formattedCreatedDate)),
           DataCell(fTableActionButton(
-            onEditPressed: () => Get.toNamed(fRoutes.editCategory,arguments: "Category"),
+            onEditPressed: () => Get.toNamed(fRoutes.editCategory,arguments: category),
             onDeletePressed: (){},
 
           ))
@@ -55,7 +59,7 @@ class CategoryRows extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => 5;
+  int get rowCount => controller.filteredItems.length;
 
   @override
   int get selectedRowCount => 0;

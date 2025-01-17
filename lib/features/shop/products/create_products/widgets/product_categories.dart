@@ -18,15 +18,19 @@ class ProductCategories extends StatelessWidget {
           SizedBox(height: fSizes.spaceBtwItems,),
 
           // MultiSelectDialogField for selecting categories
-          MultiSelectDialogField(
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: MultiSelectDialogField(
               buttonText: Text("Select Categories"),
               title: Text("Categories"),
               items: [
-                MultiSelectItem(CategoryModel(id: "id", name: "shoes",image: "image"), "shoes"),
-                MultiSelectItem(CategoryModel(id: "id", name: "shoes",image: "image"), "shoes"),
+                MultiSelectItem(CategoryModel(id: "id", name: "shoes", image: "image"), "shoes"),
+                MultiSelectItem(CategoryModel(id: "id", name: "shoes", image: "image"), "shoes"),
               ],
               listType: MultiSelectListType.CHIP,
-              onConfirm: (value) {})
+              onConfirm: (value) {},
+            ),
+          ),
 
         ],
       ),

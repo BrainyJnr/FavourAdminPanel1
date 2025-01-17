@@ -21,7 +21,7 @@ class fRoundedImage extends StatelessWidget {
     this.margin,
     // this.isNetworkImage = false,
     this.onPressed,
-    this.borderRadius = fSizes.md,
+    this.borderRadius = 100,
     this.width = 56,
     this.file, this.imageType,
     this.overlayColor, this.memoryImage,

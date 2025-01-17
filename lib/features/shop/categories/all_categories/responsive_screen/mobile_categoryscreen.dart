@@ -5,6 +5,7 @@ import 'package:favour_adminpanel/routes/routes.dart';
 import 'package:favour_adminpanel/utilis/constants/sizes.dart';
 import 'package:get/get.dart';
 import '../../../../../common/widgets/data_table/table_header.dart';
+import '../../../controller/category_controller.dart';
 import '../table/category_table.dart';
 
 class MobileCategoryscreen extends StatelessWidget {
@@ -12,6 +13,7 @@ class MobileCategoryscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CategoryController());
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -28,7 +30,12 @@ class MobileCategoryscreen extends StatelessWidget {
                 child: Column(
                   children: [
                     // Table Header
-                    TableHeader(buTTonText: "Create New Category",onPressed: () => Get.toNamed(fRoutes.createCategory),),
+                    TableHeader(
+                      buTTonText: "Create New Category",
+                      onPressed: () => Get.toNamed(fRoutes.createCategory),
+                      searchController: controller.searchTextController,
+                      searchChanged: (query) => controller.searchQuery(query),
+                    ),
                     SizedBox(
                       height: fSizes.spaceBtwItems,
                     ),
