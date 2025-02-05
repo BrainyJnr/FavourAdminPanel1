@@ -20,6 +20,8 @@ class CategoryRows extends DataTableSource {
     final category = controller.filteredItems[index];
     final parentCategory = controller.allItems.firstWhereOrNull((item) => item.id == category.parentId);
     return DataRow2(
+      selected: controller.selectedRows[index],
+        onSelectChanged: (value) => controller.selectedRows[index] = value ?? false,
         cells: [
           DataCell(
               Row(
@@ -49,7 +51,7 @@ class CategoryRows extends DataTableSource {
           DataCell(Text(category.createdAt == null ? "" : category.formattedCreatedDate)),
           DataCell(fTableActionButton(
             onEditPressed: () => Get.toNamed(fRoutes.editCategory,arguments: category),
-            onDeletePressed: (){},
+            onDeletePressed: () => controller.confirmDelete(category),
 
           ))
         ]);

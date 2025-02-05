@@ -1,4 +1,5 @@
 import 'package:favour_adminpanel/common/styles/frounded_container.dart';
+import 'package:favour_adminpanel/features/shop/controller/category_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -8,18 +9,24 @@ import '../../../../../utilis/constants/enums.dart';
 import '../../../../../utilis/constants/image_strings.dart';
 import '../../../../../utilis/constants/sizes.dart';
 import '../../../../../utilis/validators/fvalidators.dart';
+import '../../../controller/edit_category_controller.dart';
 import '../../model/category_model.dart';
+import 'package:get/get.dart';
 
 class EditcategoryForm extends StatelessWidget {
-  const EditcategoryForm({super.key,required this.category});
+  const EditcategoryForm({super.key, required this.category});
 
   final CategoryModel category;
 
   @override
   Widget build(BuildContext context) {
+    final editController = Get.put(EditCategoryController());
+    editController.init(category);
+    final categoryController = Get.put(CategoryController());
     return fRoundedContainer(
       width: 500,
       child: Form(
+          key: editController.formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -36,7 +43,9 @@ class EditcategoryForm extends StatelessWidget {
 
               // Name Text Field
               TextFormField(
-                validator: (value) => fValidator.validateEmptyText("Name", value),
+                controller: editController.name,
+                validator: (value) =>
+                    fValidator.validateEmptyText("Name", value),
                 decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -60,35 +69,42 @@ class EditcategoryForm extends StatelessWidget {
                 height: fSizes.spaceBtwInputFields * 2,
               ),
 
-              DropdownButtonFormField(
-                decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Colors.black12, // Border color when enabled
-                        width: 1.5,
-                      ),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      // Border when not focused
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Colors.black12, // Border color when enabled
-                        width: 1.5,
-                      ),
-                    ),
-                    hintText: "Parent Category",
-                    labelText: "Parent Category",
-                    prefixIcon: Icon(Iconsax.bezier)),
-                onChanged: (newValue) {},
-                items: [
-                  DropdownMenuItem(
-                      value: "",
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [Text("item.name")],
-                      ))
-                ],
+              Obx(
+                () => DropdownButtonFormField(
+                    decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                            color: Colors.black12,
+                            // Border color when enabled
+                            width: 1.5,
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          // Border when not focused
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: const BorderSide(
+                            color: Colors.black12,
+                            // Border color when enabled
+                            width: 1.5,
+                          ),
+                        ),
+                        hintText: "Parent Category",
+                        labelText: "Parent Category",
+                        prefixIcon: Icon(Iconsax.bezier)),
+                    value: editController.selectParent.value.id.isNotEmpty
+                        ? editController.selectParent.value
+                        : null,
+                    onChanged: (newValue) =>
+                        editController.selectParent.value = newValue!,
+                    items: categoryController.allItems
+                        .map((item) => DropdownMenuItem(
+                            value: item,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [Text(item.name)],
+                            )))
+                        .toList()),
               ),
               const SizedBox(
                 height: fSizes.spaceBtwInputFields * 2,
@@ -96,25 +112,34 @@ class EditcategoryForm extends StatelessWidget {
               ImageUploader(
                 width: 80,
                 height: 80,
-                image: fImages.DefaultImage,
-                imageType: ImageType.asset,
-                // onIconButtonPressed: () {},
+                image: editController.imageURL.value.isNotEmpty
+                    ? editController.imageURL.value
+                    : fImages.DefaultImage,
+                imageType: editController.imageURL.value.isNotEmpty
+                    ? ImageType.network
+                    : ImageType.asset,
+                onIconButtonPressed: () => editController.pickImage(),
               ),
               SizedBox(
                 height: fSizes.spaceBtwInputFields,
               ),
 
-              CheckboxMenuButton(
-                  value: true, onChanged: (value) {}, child: Text("Featured")),
+              Obx(
+                () => CheckboxMenuButton(
+                    value: editController.isFeatured.value,
+                    onChanged: (value) =>
+                        editController.isFeatured.value = value ?? false,
+                    child: Text("Featured")),
+              ),
               SizedBox(
                 height: fSizes.spaceBtwInputFields * 2,
               ),
               SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () => editController.updateCategory(category),
                       child: Text(
-                        "Create",
+                        "Update",
                         style: TextStyle(color: Colors.white),
                       ),
                       style: ElevatedButton.styleFrom(
@@ -128,5 +153,6 @@ class EditcategoryForm extends StatelessWidget {
               ),
             ],
           )),
-    );  }
+    );
+  }
 }

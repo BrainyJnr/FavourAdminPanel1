@@ -34,7 +34,7 @@ class CategoryDesktopscreen extends StatelessWidget {
                     // Table Header
                     TableHeader(buTTonText: "Create New Category",onPressed: () => Get.toNamed(fRoutes.createCategory),
                       searchController: controller.searchTextController,
-                    searchChanged: (query) => controller.searchQuery(query),
+                      searchChanged: (query) => controller.searchQuery(query),
                     ),
                     SizedBox(
                       height: fSizes.spaceBtwItems,

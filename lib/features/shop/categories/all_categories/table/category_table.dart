@@ -1,5 +1,4 @@
 import 'package:data_table_2/data_table_2.dart';
-import 'package:favour_adminpanel/app.dart';
 import 'package:favour_adminpanel/common/widgets/data_table/paginated_data_table.dart';
 import 'package:favour_adminpanel/features/shop/controller/category_controller.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +15,7 @@ class CategoryTable extends StatelessWidget {
     final controller = Get.put(CategoryController());
     return Obx(() {
       Text(controller.filteredItems.length.toString());
+      Text(controller.selectedRows.length.toString());
       return fPaginatedDataTable(
         sortAscending: controller.sortAscending.value,
         sortColumnIndex: controller.sortColumnIndex.value,
@@ -29,7 +29,7 @@ class CategoryTable extends StatelessWidget {
                   )),
           DataColumn2(
               label: Text("Parent Category"),
-              onSort: (columnIndex, ascending) => controller.sortByParentName(
+              onSort: (columnIndex, ascending) => controller.sortByName(
                     columnIndex,
                     ascending,
                   )),

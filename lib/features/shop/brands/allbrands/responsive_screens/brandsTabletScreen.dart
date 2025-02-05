@@ -5,8 +5,10 @@ import 'package:get/get_core/src/get_main.dart';
 import '../../../../../common/styles/frounded_container.dart';
 import '../../../../../common/widgets/breadcrumbs/breadcrumb_with_heading.dart';
 import '../../../../../common/widgets/data_table/table_header.dart';
+import '../../../../../common/widgets/loaders/fanimation.dart';
 import '../../../../../routes/routes.dart';
 import '../../../../../utilis/constants/sizes.dart';
+import '../../controller/brand_controller.dart';
 import '../table/data_table.dart';
 
 class BrandsTabletScreen extends StatelessWidget {
@@ -14,6 +16,7 @@ class BrandsTabletScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(BrandController());
     return Scaffold(
         body: SingleChildScrollView(
           child: Padding(
@@ -31,11 +34,16 @@ class BrandsTabletScreen extends StatelessWidget {
                     children: [
                       TableHeader(
                         buTTonText: "Create New Brand",
-                        onPressed: () => Get.toNamed(fRoutes.createBrand),),
+                        onPressed: () => Get.toNamed(fRoutes.createBrand),
+                        searchController: controller.searchTextController,
+                        searchChanged: (query) => controller.searchQuery(query),
+                      ),
                       const SizedBox(height: fSizes.spaceBtwSections,),
 
                       // Table
-                      const BrandTable()
+                      Obx(() {
+                        if(controller.isLoading.value) return const fLoaderAnimation();
+                        return BrandTable();})
                     ],
                   ),
                 )

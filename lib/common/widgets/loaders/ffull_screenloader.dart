@@ -1,3 +1,4 @@
+import 'package:favour_adminpanel/common/widgets/loaders/fcircular_loader.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -36,4 +37,14 @@ class fFullScreenLoader {
     Navigator.of(Get.overlayContext!).pop();
 
   }
+
+  static void PopUpCircular() {
+    Get.defaultDialog(
+      title: "",
+      onWillPop: ()  async => false,
+      content: const fCircularLoadeer(),
+      backgroundColor: Colors.transparent
+    );
+  }
+
 }

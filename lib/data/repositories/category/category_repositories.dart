@@ -26,4 +26,44 @@ class CategoryRepositories extends GetxController {
     }
   }
 
+  Future<String> createCategory(CategoryModel category) async {
+    try {
+      final data = await _db.collection("category").add(category.toJson());
+      return data.id;
+    } on FirebaseException catch (e) {
+      throw fFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw fPlatformException(e.code).message;
+    } catch (e) {
+      throw "Something went wrong. Please try again";
+    }
+  }
+
+  Future<void> updateCategory(CategoryModel category) async {
+    try {
+      await _db.collection("category").doc(category.id).update(category.toJson());
+    } on FirebaseException catch (e) {
+      throw fFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw fPlatformException(e.code).message;
+    } catch (e) {
+      throw "Something went wrong. Please try again";
+    }
+  }
+
+
+
+  Future<void> deleteCategory(String categoryId) async {
+    try {
+       await _db.collection("category").doc(categoryId).delete();
+    } on FirebaseException catch (e) {
+      throw fFirebaseException(e.code).message;
+    } on PlatformException catch (e) {
+      throw fPlatformException(e.code).message;
+    } catch (e) {
+      throw "Something went wrong. Please try again";
+    }
+  }
+
+
 }

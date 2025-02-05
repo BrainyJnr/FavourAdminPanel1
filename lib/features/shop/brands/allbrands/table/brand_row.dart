@@ -1,6 +1,7 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:favour_adminpanel/common/styles/frounded_image.dart';
 import 'package:favour_adminpanel/common/widgets/data_table/ftable_action_table.dart';
+import 'package:favour_adminpanel/features/shop/brands/controller/brand_controller.dart';
 import 'package:favour_adminpanel/routes/routes.dart';
 import 'package:favour_adminpanel/utilis/constants/enums.dart';
 import 'package:favour_adminpanel/utilis/device/device_utility.dart';
@@ -13,15 +14,20 @@ import '../../../../../utilis/constants/image_strings.dart';
 import '../../../../../utilis/constants/sizes.dart';
 
 class BrandsRows extends DataTableSource {
+  final controller = BrandController.instance;
   @override
   DataRow? getRow(int index) {
-    return DataRow2(cells: [
+    final brand = controller.filteredItems[index];
+    return DataRow2(
+        selected: controller.selectedRows[index],
+        onSelectChanged: (value) => controller.selectedRows[index] = value ?? false,
+        cells: [
       DataCell(Row(children: [
-        const fRoundedImage(
+        fRoundedImage(
             width: 50,
             height: 58,
-            image: fImages.Acer,
-            imageType: ImageType.asset,
+            image: brand.image,
+            imageType: ImageType.network,
             borderRadius: fSizes.borderRadiusMd,
             backgroundColor: fColors.primaryBackground,
             padding: fSizes.sm),
@@ -30,7 +36,7 @@ class BrandsRows extends DataTableSource {
         ),
         Expanded(
             child: Text(
-          "Adidas",
+          brand.name,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: Theme.of(Get.context!)
@@ -39,7 +45,8 @@ class BrandsRows extends DataTableSource {
               .apply(color: fColors.primary),
         ))
       ])),
-      DataCell(Padding(
+      DataCell(
+          Padding(
         padding: EdgeInsets.symmetric(vertical: fSizes.sm),
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -48,47 +55,25 @@ class BrandsRows extends DataTableSource {
             direction: fDeviceUtilis.isMobileScreen(Get.context!)
                 ? Axis.vertical
                 : Axis.horizontal,
-            children: [
+            children:  brand.brandCategories != null
+            ? brand.brandCategories!.map((e) =>
               Padding(
                 padding: EdgeInsets.only(
                     bottom: fDeviceUtilis.isMobileScreen(Get.context!)
                         ? 0
                         : fSizes.xs),
                 child: Chip(
-                  label: Text("Shoes"),
-                  padding: EdgeInsets.all(fSizes.xs),
+                  label: Text(e.name),
+                  padding: EdgeInsets.all(fSizes.xs)),
                 ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    bottom: fDeviceUtilis.isMobileScreen(Get.context!)
-                        ? 0
-                        : fSizes.xs),
-                child: Chip(
-                  label: Text("TrackSuits"),
-                  padding: EdgeInsets.all(fSizes.xs),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                    bottom: fDeviceUtilis.isMobileScreen(Get.context!)
-                        ? 0
-                        : fSizes.xs),
-                child: Chip(
-                  label: Text("Joggers"),
-                  padding: EdgeInsets.all(fSizes.xs),
-                ),
-              ),
-            ],
-          ),
-        ),
-      )),
-      const DataCell(Icon(Iconsax.heart5,color: fColors.primary,)),
-      DataCell(Text(DateTime.now().toString())),
+              ).toList() : [const SizedBox()],
+    )))),
+          DataCell(brand.isFeatured ? const Icon(Iconsax.heart5,color: fColors.primary,) : Icon(Iconsax.heart)),
+      DataCell(Text(brand.createdAt != null ? brand.formattedDate : "")),
       DataCell(
         fTableActionButton(
-          onEditPressed: () => Get.toNamed(fRoutes.editBrand,arguments: ''),
-          onDeletePressed: (){},
+          onEditPressed: () => Get.toNamed(fRoutes.editBrand,arguments: brand),
+          onDeletePressed: () => controller.confirmDelete(brand),
         )
       )
     ]);
@@ -98,8 +83,8 @@ class BrandsRows extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => 20;
+  int get rowCount => controller.filteredItems.length;
 
   @override
-  int get selectedRowCount => 0;
+  int get selectedRowCount => controller.selectedRows.where((selected) => selected).length;
 }

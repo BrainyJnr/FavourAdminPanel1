@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../../controller/brand_controller.dart';
 import 'brand_row.dart';
 
 class BrandTable extends StatelessWidget {
@@ -12,30 +13,37 @@ class BrandTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return fPaginatedDataTable(
-      minWidth: 708,
-      tableHeight: 760,
-      dataRowHeight: 64,
-      columns: [
-        DataColumn2(
-            label: Text("Brand"),
-            fixedWidth:
+    final controller = Get.put(BrandController());
+    return Obx(
+      (){
+        Text(controller.filteredItems.length.toString());
+        Text(controller.selectedRows.length.toString());
+        return fPaginatedDataTable(
+          minWidth: 700,
+          sortAscending: controller.sortAscending.value,
+          sortColumnIndex: controller.sortColumnIndex.value,
+          columns: [
+            DataColumn2(
+                label: Text("Brand"),
+                fixedWidth:
                 fDeviceUtilis.isMobileScreen(Get.context!) ? null : 280),
-        const DataColumn2(label: Text("Brands")),
-        DataColumn2(
-            label: Text("Featured"),
-            fixedWidth:
+            const DataColumn2(label: Text("Brands")),
+            DataColumn2(
+                label: Text("Featured"),
+                fixedWidth:
                 fDeviceUtilis.isMobileScreen(Get.context!) ? null : 108),
-        DataColumn2(
-            label: Text("Date"),
-            fixedWidth:
+            DataColumn2(
+                label: Text("Date"),
+                fixedWidth:
                 fDeviceUtilis.isMobileScreen(Get.context!) ? null : 200),
-        DataColumn2(
-            label: Text("Action"),
-            fixedWidth:
+            DataColumn2(
+                label: Text("Action"),
+                fixedWidth:
                 fDeviceUtilis.isMobileScreen(Get.context!) ? null : 100),
-      ],
-      source: BrandsRows(),
+          ],
+          source: BrandsRows(),
+        );
+      },
     );
   }
 }

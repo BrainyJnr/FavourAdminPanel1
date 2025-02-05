@@ -1,76 +1,31 @@
-import 'package:favour_adminpanel/common/widgets/loaders/floaders.dart';
+import 'package:favour_adminpanel/data/abstract/base_data_table_controller.dart';
 import 'package:favour_adminpanel/data/repositories/category/category_repositories.dart';
 import 'package:favour_adminpanel/features/shop/categories/model/category_model.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class CategoryController extends GetxController {
+
+class CategoryController extends fBaseController<CategoryModel> {
   static CategoryController get instance => Get.find();
-
-  RxBool isLoading = true.obs;
-  RxList<CategoryModel> allItems = <CategoryModel>[].obs;
-  RxList<CategoryModel> filteredItems = <CategoryModel>[].obs;
-
-  // Sorting
-  RxInt sortColumnIndex = 1.obs;
-  RxBool sortAscending = true.obs;
-
-  final searchTextController = TextEditingController();
 
   final _categoryRepository = Get.put(CategoryRepositories());
 
   @override
-  void onInit() {
-    fetchData();
-    super.onInit();
+  bool containsSearchQuery(CategoryModel item, String query) {
+    return item.name.toLowerCase().contains(query.toLowerCase());
   }
 
-  Future<void> fetchData() async {
-    try {
-      isLoading.value = true;
-      List<CategoryModel> fetchedItems = [];
-      if (allItems.isEmpty) {
-        fetchedItems = await _categoryRepository.getAllCategories();
-      }
-      allItems.assignAll(fetchedItems);
-      filteredItems.assignAll(allItems);
-      isLoading.value = false;
-    } catch (e) {
-      isLoading.value = false;
-      fLoaders.errorSnackBar(title: "Oh Snap!", message: e.toString());
-    }
+  @override
+  Future<void> deleteItem(CategoryModel items) async {
+    await _categoryRepository.deleteCategory(items.id);
   }
 
-  void sortByName(int columnIndex, bool ascending) {
-    sortColumnIndex.value = columnIndex;
-    sortAscending.value = ascending;
-
-    filteredItems.sort((a, b) {
-      if (ascending) {
-        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-      } else {
-        return b.name.toLowerCase().compareTo(a.name.toLowerCase());
-      }
-    });
+  @override
+  Future<List<CategoryModel>> fetchItems() async {
+    return await _categoryRepository.getAllCategories();
   }
 
-  void sortByParentName(int columnIndex, bool ascending) {
-    sortColumnIndex.value = columnIndex;
-    sortAscending.value = ascending;
-
-    filteredItems.sort((a, b) {
-      if (ascending) {
-        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
-      } else {
-        return b.name.toLowerCase().compareTo(a.name.toLowerCase());
-      }
-    });
+  void sortByName(int sortColumnIndex, bool ascending) {
+    sortByProperty(sortColumnIndex, ascending, (CategoryModel category) => category.name.toLowerCase());
   }
 
-  searchQuery(String query) {
-    print(query);
-    filteredItems.assignAll(
-      allItems.where((item) => item.name.toLowerCase().contains(query.toLowerCase()))
-    );
-  }
 }
