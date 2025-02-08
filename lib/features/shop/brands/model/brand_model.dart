@@ -25,9 +25,10 @@ class BrandModel {
     this.updatedAt,
   });
 
-  static BrandModel empty() => BrandModel(
-      id: "",
-      image: "", name: "");
+  static BrandModel empty() =>
+      BrandModel(
+          id: "",
+          image: "", name: "");
 
   String get formattedDate => fFormatter.formatDate(createdAt);
 
@@ -50,15 +51,19 @@ class BrandModel {
   factory BrandModel.fromJson(Map<String, dynamic> document) {
     final data = document;
     if (data.isEmpty) return BrandModel.empty();
+
     return BrandModel(
       id: data["Id"] ?? "",
-      image: data["Name"] ?? "",
-      name: data["Image"] ?? "",
+      image: data["Image"] ?? "",
+      name: data["Name"] ?? "",
       isFeatured: data["IsFeatured"] ?? false,
       productsCount: int.parse((data["ProductsCount"] ?? 0).toString()),
-      createdAt: data.containsKey("CreatedAt") ? data["CreatedAt"]?.toDate : null,
-      updatedAt: data.containsKey("UpdatedAt") ? data["UpdatedAt"]?.toDate : null,
-
+      createdAt: data.containsKey("CreatedAt")
+          ? (data["CreatedAt"] as Timestamp).toDate()
+          : null,
+      updatedAt: data.containsKey("UpdatedAt")
+          ? (data["UpdatedAt"] as Timestamp).toDate()
+          : null,
     );
   }
 
@@ -73,9 +78,12 @@ class BrandModel {
         name: data["Name"] ?? "",
         isFeatured: data["IsFeatured"] ?? false,
         productsCount: int.parse((data["ProductsCount"] ?? 0).toString()),
-        createdAt: data.containsKey("CreatedAt") ? data["CreatedAt"]?.toDate : null,
-        updatedAt: data.containsKey("UpdatedAt") ? data["UpdatedAt"]?.toDate : null,
-        //productsCount: data["ProductsCount"] ?? "",
+        createdAt: data.containsKey("CreatedAt")
+            ? (data["CreatedAt"] as Timestamp).toDate()
+            : null,
+        updatedAt: data.containsKey("UpdatedAt")
+            ? (data["UpdatedAt"] as Timestamp).toDate()
+            : null,
       );
     } else {
       return BrandModel.empty();

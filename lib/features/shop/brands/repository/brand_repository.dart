@@ -9,8 +9,8 @@ import '../../../../utilis/exceptors/format_exception.dart';
 import '../../../../utilis/exceptors/platform_exception.dart';
 import '../model/brand_model.dart';
 
-class BrandRepository extends GetxController {
-  static BrandRepository get instance => Get.find();
+class BrandRepositorys extends GetxController {
+  static BrandRepositorys get instance => Get.find();
 
 
   /// Variables

@@ -1,8 +1,10 @@
 import 'package:favour_adminpanel/data/abstract/base_data_table_controller.dart';
 import 'package:favour_adminpanel/features/shop/brands/model/brand_model.dart';
-import 'package:favour_adminpanel/features/shop/brands/repository/brand_repository.dart';
 import 'package:favour_adminpanel/features/shop/controller/category_controller.dart';
 import 'package:get/get.dart';
+
+import '../../../../data/repositories/brand/brand_repository.dart';
+import '../repository/brand_repository.dart';
 
 class BrandController extends fBaseController<BrandModel> {
   static BrandController get instance => Get.find();
@@ -16,7 +18,7 @@ class BrandController extends fBaseController<BrandModel> {
     final fetchedBrands = await _brandRepository.getAllBrands();
 
     // Fetch Brand Categories Relational Data
-    final fetchedBrandCategories = await _brandRepository.getAllBrandsCategory();
+    final fetchedBrandCategories = await _brandRepository.getBrandsForCategory();
 
     // Fetch all Categories if data does not Already Exist
     if(categoryController.allItems.isNotEmpty) await categoryController.fetchItems();
@@ -42,8 +44,8 @@ class BrandController extends fBaseController<BrandModel> {
   }
 
   @override
-  Future<void> deleteItem(BrandModel item) {
-    throw UnimplementedError();
+  Future<void> deleteItem(BrandModel item) async {
+    await _brandRepository.deleteBrand(item);
 
   }
 

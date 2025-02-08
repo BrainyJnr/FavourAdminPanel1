@@ -1,5 +1,11 @@
+import 'package:favour_adminpanel/app.dart';
+import 'package:favour_adminpanel/features/shop/brands/controller/update_brand_controller.dart';
 import 'package:favour_adminpanel/features/shop/brands/model/brand_model.dart';
+import 'package:favour_adminpanel/features/shop/controller/category_controller.dart';
+import 'package:favour_adminpanel/utilis/validators/fvalidators.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../common/styles/frounded_container.dart';
@@ -11,16 +17,19 @@ import '../../../../utilis/constants/image_strings.dart';
 import '../../../../utilis/constants/sizes.dart';
 
 class EditBrandForm extends StatelessWidget {
-  const EditBrandForm ({super.key, required this.brand});
+  const EditBrandForm({super.key, required this.brand});
 
   final BrandModel brand;
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(UpdateBrandController());
+    controller.init(brand);
     return fRoundedContainer(
       width: 500,
       padding: EdgeInsets.all(fSizes.defaultSpace),
       child: Form(
+          key: controller.formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -38,6 +47,8 @@ class EditBrandForm extends StatelessWidget {
 
               // Name TextField
               TextFormField(
+                controller: controller.name,
+                validator: (value) => fValidator.validateEmptyText("Name", value),
                 decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
@@ -53,7 +64,9 @@ class EditBrandForm extends StatelessWidget {
                         color: Colors.black12, // Border color when enabled
                         width: 1.5,
                       ),
-                    ),                    labelText: "Brand Name", prefixIcon: Icon(Iconsax.box)),
+                    ),
+                    labelText: "Brand Name",
+                    prefixIcon: Icon(Iconsax.category)),
               ),
               const SizedBox(
                 height: fSizes.spaceBtwInputFields,
@@ -67,46 +80,45 @@ class EditBrandForm extends StatelessWidget {
               const SizedBox(
                 height: fSizes.spaceBtwInputFields / 2,
               ),
-              Wrap(
-                spacing: fSizes.sm,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(bottom: fSizes.sm),
-                    child: fChoiceChip(
-                      text: "Shoes",
-                      selected: true,
-                      onSelected: (value) {},
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(bottom: fSizes.sm),
-                    child: fChoiceChip(
-                      text: "Track Suites",
-                      selected: false,
-                      onSelected: (value) {},
-                    ),
-                  )
-                ],
+              Obx(
+                () => Wrap(
+                  spacing: fSizes.sm,
+                  children: CategoryController.instance.allItems
+                    .map((element) =>
+                    Padding(
+                      padding: EdgeInsets.only(bottom: fSizes.sm),
+                      child: fChoiceChip(
+                        text: element.name,
+                        selected: controller.selectedCategory.contains(element),
+                        onSelected: (value) => controller.toggleSelection(element),
+                      ),
+                    )).toList()),
               ),
               const SizedBox(
                 height: fSizes.spaceBtwInputFields * 2,
               ),
 
               // Image Uploader & Featured Checkbox
-              ImageUploader(
-                imageType: ImageType.asset,
-                width: 80,
-                height: 80,
-                image: fImages.Acer,
-                onIconButtonPressed: () {},
+              Obx(
+                () => ImageUploader(
+                  image: controller.imageURL.value.isNotEmpty ? controller.imageURL.value : fImages.animalIcon,
+                  width: 80,
+                  height: 80,
+                  imageType: controller.imageURL.value.isNotEmpty ? ImageType.network : ImageType.asset,
+                  onIconButtonPressed: () => controller.pickImage(),
+                ),
               ),
               const SizedBox(
                 height: fSizes.spaceBtwInputFields,
               ),
 
               // Checkbox
-              CheckboxMenuButton(
-                  value: true, onChanged: (value) {}, child: Text("Featured")),
+              Obx(
+                () => CheckboxMenuButton(
+                    value: controller.isFeatured.value,
+                    onChanged: (value) => controller.isFeatured.value = value ?? false,
+                    child: Text("Featured")),
+              ),
               const SizedBox(
                 height: fSizes.spaceBtwInputFields * 2,
               ),
@@ -120,7 +132,7 @@ class EditBrandForm extends StatelessWidget {
                         backgroundColor: fColors.primary,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10))),
-                    onPressed: () {},
+                    onPressed: () => controller.UpdateBrand(brand),
                     child: Text(
                       "Update",
                       style: TextStyle(color: Colors.white),

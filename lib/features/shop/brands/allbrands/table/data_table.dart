@@ -24,10 +24,11 @@ class BrandTable extends StatelessWidget {
           sortColumnIndex: controller.sortColumnIndex.value,
           columns: [
             DataColumn2(
+
                 label: Text("Brand"),
                 fixedWidth:
                 fDeviceUtilis.isMobileScreen(Get.context!) ? null : 280),
-            const DataColumn2(label: Text("Brands")),
+            const DataColumn2(label: Text("Categories")),
             DataColumn2(
                 label: Text("Featured"),
                 fixedWidth:
