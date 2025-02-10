@@ -1,5 +1,12 @@
+import 'package:favour_adminpanel/app.dart';
 import 'package:favour_adminpanel/common/styles/frounded_image.dart';
+import 'package:favour_adminpanel/data/repositories/banner/banner_repository.dart';
+import 'package:favour_adminpanel/features/shop/banners/controller/banner_controller.dart';
+import 'package:favour_adminpanel/features/shop/banners/controller/create_banner_controller.dart';
+import 'package:favour_adminpanel/routes/all_appScreens.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../common/styles/frounded_container.dart';
@@ -15,82 +22,102 @@ class CreateBannerForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(CreateBannerController());
+    final controllers = Get.put(BannerRepository());
+    final controller2 = Get.put(BannerController());
     return fRoundedContainer(
       width: 500,
       padding: EdgeInsets.all(fSizes.defaultSpace),
       child: Form(
+          key: controller.formKey,
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        // Heading
-        const SizedBox(
-          height: fSizes.sm,
-        ),
-        Text(
-          "Create New Banner ",
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        const SizedBox(
-          height: fSizes.spaceBtwSections,
-        ),
-
-        // Image Uploader & Featured Checkbox
-        Column(
-          children: [
-            GestureDetector(
-              child: fRoundedImage(
-                padding: fSizes.chi,
-                width: 400,
-                imageType: ImageType.asset,
-                height: 200,
-                backgroundColor: fColors.primaryBackground,
-                image: fImages.DefaultImage,
-              ),
+            // Heading
+            const SizedBox(
+              height: fSizes.sm,
+            ),
+            Text(
+              "Create New Banner ",
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(
-              height: fSizes.spaceBtwItems,
+              height: fSizes.spaceBtwSections,
             ),
-            TextButton(onPressed: () {}, child: Text("Select Image")),
-          ],
-        ),
-        const SizedBox(
-          height: fSizes.spaceBtwInputFields,
-        ),
-        Text(
-          "Make your Banner Active or InActive",
-          style: Theme.of(context).textTheme.bodySmall,
-        ),
-        CheckboxMenuButton(
-            value: true, onChanged: (value) {}, child: const Text("Active")),
-        const SizedBox(
-          height: fSizes.spaceBtwInputFields,
-        ),
 
-        // Dropdown Menu Screens
-        DropdownButton<String>(
-          value: 'search',
-          onChanged: (String? newValue) {},
-          items: [
-            DropdownMenuItem<String>(
-              value: 'home',
-              child: Text('Home'),
+            // Image Uploader & Featured Checkbox
+            Column(
+              children: [
+                Obx(
+                  () => GestureDetector(
+                    onTap: () => controller.pickImage(),
+                    child: fRoundedImage(
+                      padding: fSizes.chi,
+                      width: 400,
+                      image: controller.imageURL.value.isNotEmpty
+                          ? controller.imageURL.value
+                          : fImages.DefaultImage,
+                      height: 200,
+                      backgroundColor: fColors.primaryBackground,
+                      imageType: controller.imageURL.value.isNotEmpty
+                          ? ImageType.network
+                          : ImageType.asset,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: fSizes.spaceBtwItems,
+                ),
+                TextButton(
+                    onPressed: () => controller.pickImage(),
+                    child: Text("Select Image")),
+              ],
             ),
-            DropdownMenuItem<String>(
-              value: 'search',
-              child: Text('Search'),
+            const SizedBox(
+              height: fSizes.spaceBtwInputFields,
             ),
-          ],
-        ),
-        const SizedBox(
-          height: fSizes.spaceBtwInputFields * 2,
-        ),
-        SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(onPressed: () {}, child: Text("Create")),
-        ),
-        const SizedBox(
-          height: fSizes.spaceBtwInputFields * 2,
-        )
-      ])),
+            Text(
+              "Make your Banner Active or InActive",
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            Obx(
+              () => CheckboxMenuButton(
+                  value: controller.isActive.value,
+                  onChanged: (value) =>
+                      controller.isActive.value = value ?? false,
+                  child: const Text("Active")),
+            ),
+            const SizedBox(
+              height: fSizes.spaceBtwInputFields,
+            ),
+
+            // Dropdown Menu Screens
+            Obx(() {
+              return DropdownButton<String>(
+                value: controller.targetScreen.value,
+                onChanged: (String? newValue) =>
+                    controller.targetScreen.value = newValue!,
+                items: AllAppScreens.AllAppScreenItems.map<
+                    DropdownMenuItem<String>>((value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              );
+            }),
+            const SizedBox(
+              height: fSizes.spaceBtwInputFields * 2,
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                  onPressed: () => controller.createBanner(),
+                  child: Text("Create")),
+            ),
+            const SizedBox(
+              height: fSizes.spaceBtwInputFields * 2,
+            )
+          ])),
     );
   }
 }

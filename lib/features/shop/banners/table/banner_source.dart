@@ -13,33 +13,39 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:iconsax/iconsax.dart';
 
+import '../controller/banner_controller.dart';
+
 class BannerRow extends DataTableSource {
+  final controller = BannerController.instance;
+
   @override
   DataRow? getRow(int index) {
+    final banner = controller.filteredItems[index];
     return DataRow2(
+      selected: controller.selectedRows[index],
+      onTap: () => Get.toNamed(fRoutes.editBanner, arguments: banner),
+      onSelectChanged: (value) =>
+          controller.selectedRows[index] = value ?? false,
       cells: [
         DataCell(fRoundedImage(
           width: 180,
           height: 100,
           padding: fSizes.sm,
-          image: fImages.Acer,
-          imageType: ImageType.asset,
+          image: banner.imageUrl,
+          imageType: ImageType.network,
           borderRadius: fSizes.borderRadiusMd,
           backgroundColor: fColors.primaryBackground,
         )),
-        const DataCell(Text("Shop")),
-        DataCell(Icon(
-          Iconsax.eye,
-          color: fColors.primary,
-        )),
+        DataCell(Text(controller.formatRoute(banner.targetScreen))),
+        DataCell(
+          banner.active
+              ? const Icon(Iconsax.eye, color: fColors.primary)
+              : const Icon(Iconsax.eye_slash),
+        ),
         DataCell(fTableActionButton(
-          onEditPressed: () => Get.toNamed(fRoutes.editBanner,
-              arguments: BannerModel(
-                imageUrl: "",
-                targetScreen: "",
-                active: false,
-              )),
-          onDeletePressed: () {},
+          onEditPressed: () =>
+              Get.toNamed(fRoutes.editBanner, arguments: banner),
+          onDeletePressed: () => controller.confirmDelete(banner),
         ))
       ],
     );
@@ -49,8 +55,9 @@ class BannerRow extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => 20;
+  int get rowCount => controller.filteredItems.length;
 
   @override
-  int get selectedRowCount => 0;
+  int get selectedRowCount =>
+      controller.selectedRows.where((selected) => selected).length;
 }

@@ -2,37 +2,30 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BannerModel {
   String imageUrl;
-  final String? id;
-  String? name;
-  bool? isFeatured;
+  String? id;
+  //String? name;
+ // bool? isFeatured;
 
-  final String targetScreen;
+   String targetScreen;
   bool active;
 
   BannerModel({
-     this.name,
+    // this.name,
     required this.imageUrl,
     required this.targetScreen,
     required this.active,
-     this.isFeatured,
+     //this.isFeatured,
      this.id,
   });
 
-  static BannerModel empty() => BannerModel(
-      imageUrl: "",
-      targetScreen: "",
-      active: false,
-      id: '',
-      name: '',
-      isFeatured: false);
 
   Map<String, dynamic> toJson() {
     return {
       "ImageUrl": imageUrl,
       "TargetScreen": targetScreen,
       "Active": active,
-      "Name": name,
-      "IsFeatured": isFeatured,
+     // "Name": name,
+     // "IsFeatured": isFeatured,
     };
   }
 
@@ -48,21 +41,15 @@ class BannerModel {
 //   }}
 
   factory BannerModel.fromSnapshot(
-      DocumentSnapshot<Map<String, dynamic>> document) {
-    if (document.data() != null) {
-      final data = document.data()!;
+      DocumentSnapshot snapshot) {
+      final data = snapshot.data() as Map<String, dynamic>;
 
 // Map JSON Record to the Model
       return BannerModel(
-        id: document.id,
-        name: data["Name"],
+        id: snapshot.id,
         imageUrl: data["ImageUrl"] ?? "",
         targetScreen: data["TargetScreen"] ?? "",
         active: data["Active"] ?? false,
-        isFeatured: data["IsFeatured"] ?? false,
       );
-    } else {
-      return BannerModel.empty();
     }
-  }
 }
