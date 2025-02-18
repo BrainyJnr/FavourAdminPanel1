@@ -1,6 +1,7 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:favour_adminpanel/common/styles/frounded_image.dart';
 import 'package:favour_adminpanel/common/widgets/data_table/ftable_action_table.dart';
+import 'package:favour_adminpanel/features/shop/products/controller/product_controller.dart';
 import 'package:favour_adminpanel/routes/routes.dart';
 import 'package:favour_adminpanel/utilis/constants/enums.dart';
 import 'package:flutter/material.dart';
@@ -13,18 +14,23 @@ import '../../../../../utilis/constants/sizes.dart';
 import '../../model/product_model.dart';
 
 class ProductsRows extends DataTableSource {
+  final controller = ProductController.instance;
   @override
   DataRow? getRow(int index) {
+    final product = controller.filteredItems[index];
     return DataRow2(
+      selected: controller.selectedRows[index],
+      onTap: () => Get.toNamed(fRoutes.editProduct, arguments: product),
+      onSelectChanged: (value) => controller.selectedRows[index] = value ?? false,
       cells: [
         DataCell(Row(
           children: [
-            const fRoundedImage(
+             fRoundedImage(
               width: 50,
               height: 50,
               padding: fSizes.xs,
-              image: fImages.Acer,
-              imageType: ImageType.asset,
+              image: product.thumbnail,
+              imageType: ImageType.network,
               borderRadius: fSizes.borderRadiusMd,
               backgroundColor: fColors.primaryBackground,
             ),
@@ -33,7 +39,7 @@ class ProductsRows extends DataTableSource {
             ),
             Flexible(
                 child: Text(
-              "Product Title",
+              product.title,
               style: Theme.of(Get.context!)
                   .textTheme
                   .bodyLarge!
@@ -42,17 +48,17 @@ class ProductsRows extends DataTableSource {
             ))
           ],
         )),
-        const DataCell(Text("256")),
+         DataCell(Text(controller.getProductStockTotal(product))),
+         DataCell(Text(controller.getProductSoldQuantity(product))),
 
-        // Brand
         DataCell(Row(
           children: [
             fRoundedImage(
+              width: 50,
+              height: 50,
               padding: fSizes.xs,
-              width: 35,
-              height: 35,
-              image: fImages.Acer,
-              imageType: ImageType.asset,
+              image: product.brand?.image ?? fImages.Acer,
+              imageType: product.brand?.image != null ? ImageType.network : ImageType.asset,
               borderRadius: fSizes.borderRadiusMd,
               backgroundColor: fColors.primaryBackground,
             ),
@@ -61,24 +67,24 @@ class ProductsRows extends DataTableSource {
             ),
             Flexible(
                 child: Text(
-              "Nike",
-              style: Theme.of(Get.context!)
-                  .textTheme
-                  .bodyMedium!
-                  .apply(color: fColors.primary),
-            ))
+                  product.brand != null ? product.brand!.name : "",
+                  style: Theme.of(Get.context!)
+                      .textTheme
+                      .bodyLarge!
+                      .apply(color: fColors.primary),
+                  overflow: TextOverflow.ellipsis,
+                ))
           ],
         )),
 
-        const DataCell(Text("\$99.9")),
-
-        DataCell(Text(DateTime.now().toString())),
+        DataCell(Text("\$${controller.getProductPrice(product)}")),
+        DataCell(Text(product.formattedDate)),
 
         DataCell(
           fTableActionButton(
-            onEditPressed: () => Get.toNamed(fRoutes.editProduct,arguments: ProductModel.empty()),
+            onEditPressed: () => Get.toNamed(fRoutes.editProduct,arguments: product),
 
-            onDeletePressed: (){},
+            onDeletePressed: () => controller.confirmDelete(product),
           )
         )
       ],
@@ -89,8 +95,8 @@ class ProductsRows extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => 100;
+  int get rowCount => controller.filteredItems.length;
 
   @override
-  int get selectedRowCount => 0;
+  int get selectedRowCount => controller.selectedRows.where((selected) => selected).length;
 }

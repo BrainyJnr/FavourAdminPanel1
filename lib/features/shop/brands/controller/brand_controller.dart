@@ -39,8 +39,7 @@ class BrandController extends fBaseController<BrandModel> {
 
   @override
   bool containsSearchQuery(BrandModel item, String query) {
-    throw UnimplementedError();
-
+    return item.name.toLowerCase().contains(query.toLowerCase()) ;
   }
 
   @override

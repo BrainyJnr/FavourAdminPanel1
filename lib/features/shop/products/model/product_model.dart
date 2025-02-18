@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-
+import 'package:favour_adminpanel/features/shop/products/model/product_attribute_model.dart';
+import 'package:favour_adminpanel/features/shop/products/model/product_variation_model.dart';
+import 'package:favour_adminpanel/utilis/formatters/fformaters.dart';
 import '../../brands/model/brand_model.dart';
 
 class ProductModel {
@@ -15,8 +17,11 @@ class ProductModel {
   BrandModel? brand;
   String? description;
   String? categoryId;
+  int? soldQuantity;
   List<String>? images;
   String productType;
+  List<ProductAttributeModel>? productAttributes;
+  List<ProductVariationModel>? productVariation;
 
   ProductModel({
     required this.id,
@@ -30,12 +35,16 @@ class ProductModel {
     this.date,
     this.images,
     this.salePrice = 0.0,
+    this.soldQuantity = 0,
     //required this.salePrice,
     this.isFeatured,
     this.categoryId,
     this.description,
+    this.productAttributes,
+    this.productVariation,
   });
 
+  String get formattedDate => fFormatter.formatDate(date);
   static ProductModel empty() => ProductModel(
     id: "",
     title: "",
@@ -55,23 +64,26 @@ class ProductModel {
       "Images": images ?? [],
       "Thumbnail": thumbnail,
       "SalePrice": salePrice,
+      "soldQuantity": soldQuantity,
       "IsFeatured": isFeatured,
       "CategoryId": categoryId,
       "Brand": brand!.toJson(),
       "Description": description,
       "ProductType": productType,
+      "productAttributes": productAttributes != null ? productAttributes!.map((e) => e.toJson()).toList() : [],
+      "productVariation": productVariation != null ? productVariation!.map((e) => e.toJson()).toList() : [],
     };
   }
 
   /// Map Json oriented document snapshot from Firebase to Model
-  factory ProductModel.fromSnapshot(
-      DocumentSnapshot<Map<String, dynamic>> document) {
+  factory ProductModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> document) {
     if (document.data() == null) return ProductModel.empty();
     final data = document.data()!;
+
     return ProductModel(
       id: document.id,
-      sku: data["SKU"],
-      title: data["Title"],
+      sku: data["SKU"] ?? "",
+      title: data["Title"] ?? "",
       stock: data["Stock"] ?? 0,
       isFeatured: data["IsFeatured"] ?? false,
       price: double.parse((data["Price"] ?? 0.0).toString()),
@@ -80,8 +92,15 @@ class ProductModel {
       categoryId: data["CategoryId"] ?? "",
       description: data["Description"] ?? "",
       productType: data["ProductType"] ?? "",
-      brand: BrandModel.fromJson(data["Brand"]),
-      images: data["Images"] != null ? List<String>.from(data["Images"]) : [],
+      brand: data["Brand"] != null ? BrandModel.fromJson(data["Brand"]) : null,
+      images: data["Images"] != null ? List<String>.from(data["Images"]) : [], // ✅ Prevent null error
+      soldQuantity: data.containsKey("SoldQuantity") ? data["SoldQuantity"] ?? 0 : 0,
+      productAttributes: data["ProductAttributes"] != null
+          ? (data["ProductAttributes"] as List<dynamic>).map((e) => ProductAttributeModel.fromJson(e)).toList()
+          : [], // ✅ Prevent null error
+      productVariation: data["ProductVariation"] != null
+          ? (data["ProductVariation"] as List<dynamic>).map((e) => ProductVariationModel.fromJson(e)).toList()
+          : [], // ✅ Prevent null error
     );
   }
 
@@ -95,6 +114,7 @@ class ProductModel {
       stock: data["Stock"] ?? "",
       isFeatured: data["IsFeatured"] ?? false,
       price: double.parse((data["Price"] ?? 0.0).toString()),
+      soldQuantity: data.containsKey("SoldQuantity") ? data["SoldQuantity"] ?? 0 : 0,
       salePrice: double.parse((data["SalePrice"] ?? 0.0).toString()),
       thumbnail: data["Thumbnail"] ?? "",
       categoryId: data["CategoryId"] ?? "",
@@ -102,6 +122,10 @@ class ProductModel {
       productType: data["ProductType"] ?? "",
       brand: BrandModel.fromJson(data["Brand"]),
       images: data["Images"] != null ? List<String>.from(data["Images"]) : [],
+      productAttributes: (data["ProductAttributes"] as List<dynamic>).map((e) => ProductAttributeModel.fromJson(e)).toList(),
+      productVariation: (data["ProductVariation"] as List<dynamic>).map((e) => ProductVariationModel.fromJson(e)).toList(),
+
+
     );
   }
 }

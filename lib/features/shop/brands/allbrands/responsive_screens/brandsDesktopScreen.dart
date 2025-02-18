@@ -20,38 +20,37 @@ class BrandsDesktopScreen extends StatelessWidget {
     final controller = Get.put(BrandController());
     return Scaffold(
         body: SingleChildScrollView(
-      child: Padding(
-        padding: EdgeInsets.all(fSizes.defaultSpace),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const fBreadCrumbsWithHeading(
-                heading: "Brands", breadcrumbItems: ['Brands']),
-            const SizedBox(
-              height: fSizes.spaceBtwSections,
-            ),
-            fRoundedContainer(
-              child: Column(
-                children: [
-                  TableHeader(
-                    buTTonText: "Create New Brand",
-                    onPressed: () => Get.toNamed(fRoutes.createBrand),
-                    searchController: controller.searchTextController,
-                    searchChanged: (query) => controller.searchQuery(query),
+            child: Padding(
+                padding: EdgeInsets.all(fSizes.defaultSpace),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const fBreadCrumbsWithHeading(
+                        heading: "Brands", breadcrumbItems: ['Brands']),
+                    const SizedBox(
+                      height: fSizes.spaceBtwSections,
+                    ),
+                    Obx(() {
+                      if (controller.isLoading.value)
+                        return const fLoaderAnimation();
+                      return fRoundedContainer(
+                          child: Column(children: [
+                        TableHeader(
+                          buTTonText: "Create New Brand",
+                          onPressed: () => Get.toNamed(fRoutes.createBrand),
+                          searchController: controller.searchTextController,
+                          searchChanged: (query) =>
+                              controller.searchQuery(query),
+                        ),
+                        const SizedBox(
+                          height: fSizes.spaceBtwSections,
+                        ),
 
-                  ),
-                  const SizedBox(height: fSizes.spaceBtwSections,),
-
-                  // Table
-                  Obx(() {
-                    if(controller.isLoading.value) return fLoaderAnimation();
-                  return BrandTable();})
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    ));
+                        // Table
+                        BrandTable()
+                      ]));
+                    })
+                  ],
+                ))));
   }
 }
