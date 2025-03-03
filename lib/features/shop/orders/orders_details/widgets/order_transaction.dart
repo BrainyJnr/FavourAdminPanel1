@@ -1,12 +1,12 @@
 import 'package:favour_adminpanel/common/styles/frounded_container.dart';
 import 'package:favour_adminpanel/common/styles/frounded_image.dart';
-import 'package:favour_adminpanel/features/shop/dashboard/controller/dashboard_controller.dart';
 import 'package:favour_adminpanel/utilis/constants/enums.dart';
 import 'package:favour_adminpanel/utilis/constants/sizes.dart';
 import 'package:favour_adminpanel/utilis/device/device_utility.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../../../../../utilis/constants/image_strings.dart';
+import '../../model/order_model.dart';
 
 class OrderTransaction extends StatelessWidget {
   const OrderTransaction({super.key, required this.order});

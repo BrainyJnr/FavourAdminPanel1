@@ -11,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
+import '../../../orders/model/order_model.dart';
+
 class CustomerOrderRows extends DataTableSource {
   @override
   DataRow? getRow(int index) {
@@ -18,7 +20,7 @@ class CustomerOrderRows extends DataTableSource {
         id: "id",
         status: OrderStatus.shipped,
         totalAmount: 33.3,
-        orderDate: DateTime.now(), items: []);
+        orderDate: DateTime.now(), items: [], shippingCost: 0, taxCost: 0, userid: '');
     const totalAmount = '4333.3';
     return DataRow2(
         selected: false,

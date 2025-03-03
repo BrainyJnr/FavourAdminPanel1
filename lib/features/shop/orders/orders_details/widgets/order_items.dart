@@ -1,6 +1,5 @@
 import 'package:favour_adminpanel/common/styles/frounded_container.dart';
 import 'package:favour_adminpanel/common/styles/frounded_image.dart';
-import 'package:favour_adminpanel/features/shop/dashboard/controller/dashboard_controller.dart';
 import 'package:favour_adminpanel/utilis/constants/colors.dart';
 import 'package:favour_adminpanel/utilis/constants/enums.dart';
 import 'package:favour_adminpanel/utilis/constants/image_strings.dart';
@@ -8,6 +7,8 @@ import 'package:favour_adminpanel/utilis/constants/sizes.dart';
 import 'package:favour_adminpanel/utilis/device/device_utility.dart';
 import 'package:favour_adminpanel/utilis/helpers/pricing_calculator.dart';
 import 'package:flutter/material.dart';
+
+import '../../model/order_model.dart';
 
 class OrderItems extends StatelessWidget {
   const OrderItems({super.key, required this.order});
@@ -122,7 +123,7 @@ class OrderItems extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("Shipping",style: Theme.of(context).textTheme.titleMedium,),
-                    Text('\$${fPricingCalculator.calculateShippingCost(subTotal, '')}',
+                    Text('\$${order.shippingCost.toStringAsFixed(2)}',
                     style: Theme.of(context).textTheme.titleMedium,)
 
                   ],
@@ -135,7 +136,7 @@ class OrderItems extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("Tax",style: Theme.of(context).textTheme.titleMedium,),
-                    Text('\$${fPricingCalculator.calculateTax(subTotal, '')}',
+                    Text('\$${order.taxCost.toStringAsFixed(2)}',
                       style: Theme.of(context).textTheme.titleMedium,)
                   ],
                 ),
@@ -146,7 +147,7 @@ class OrderItems extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text("Total",style: Theme.of(context).textTheme.titleMedium,),
-                    Text('\$${fPricingCalculator.calculateTotalPrice(subTotal, '')}',
+                    Text('\$${order.totalAmount.toStringAsFixed(2)}',
                       style: Theme.of(context).textTheme.titleMedium,)
                   ],
                 )

@@ -43,4 +43,41 @@ class UserRepository extends GetxController {
     }
   }
 
+  Future<UserModel> fetchUserDetails(String id) async {
+    try {
+      final documentSnapshot = await _db.collection("Users").doc(id).get();
+
+      if (documentSnapshot.exists) {
+        return UserModel.fromSnapshot(documentSnapshot);
+      } else {
+        throw "User not found";
+      }
+    } on FirebaseException catch (e) {
+      throw fFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw const fFormatException();
+    } on PlatformException catch (e) {
+      throw fPlatformException(e.code).message;
+    } catch (e) {
+      throw "Something went wrong. $e";
+    }
+  }
+
+  Future<List<UserModel>> getAllUsers(String userId) async {
+    try {
+      final querySnapshot = await _db.collection("Users").orderBy("FirstName").get();
+      return querySnapshot.docs.map((doc) => UserModel.fromSnapshot(doc)).toList();
+
+    } on FirebaseException catch (e) {
+      throw fFirebaseException(e.code).message;
+    } on FormatException catch (_) {
+      throw const fFormatException();
+    } on PlatformException catch (e) {
+      throw fPlatformException(e.code).message;
+    } catch (e) {
+      throw "Something went wrong. $e";
+    }
+  }
+
+
 }

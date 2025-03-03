@@ -96,7 +96,10 @@ class UserModel {
         profilePicture: data.containsKey("ProfilePicture")
             ? data["ProfilePicture"] ?? ""
             : "",
-        role: data["Role"] == AppRole.admin.name ? AppRole.admin : AppRole.user,
+        role: data.containsKey("Role")
+            ? (data["Role"] ??  AppRole.user) ==  AppRole.admin.name.toString()
+          ? AppRole.admin : AppRole.user
+      : AppRole.user,
         createAt: data.containsKey("CreatedAt")
             ? data["CreatedAt"]?.toDate() ?? DateTime.now()
             : DateTime.now(),
@@ -105,7 +108,7 @@ class UserModel {
             : DateTime.now(),
       );
     } else {
-      return UserModel.empty();
+      return empty();
     }
   }
 }

@@ -6,7 +6,6 @@ import 'package:favour_adminpanel/features/shop/categories/screens/category_scre
 import 'package:favour_adminpanel/features/shop/customers/customer.dart';
 import 'package:favour_adminpanel/features/shop/customers/customer_detail/customer_detail_screen.dart';
 import 'package:favour_adminpanel/features/shop/orders/all_orders/orders.dart';
-import 'package:favour_adminpanel/features/shop/products/screens/product_screen.dart';
 import 'package:favour_adminpanel/features_authentication/screens/forget_password/forget_password.dart';
 import 'package:favour_adminpanel/features_authentication/screens/reset_password/reset_passsword.dart';
 import 'package:favour_adminpanel/routes/routes.dart';
@@ -21,8 +20,9 @@ import '../features/shop/brands/allbrands/screens/brandscreens.dart';
 import '../features/shop/brands/editbrand/screens/editbrands.dart';
 import '../features/shop/dashboard/dashboard_screen.dart';
 import '../features/shop/orders/orders_details/screens/order_detail_screen.dart';
-import '../features/shop/products/create_products/screens/create_product_screen.dart';
-import '../features/shop/products/edit_products/screens/edit_product_screen.dart';
+import '../features/shop/products_c/all_products/products.dart';
+import '../features/shop/products_c/create_product/create_product.dart';
+import '../features/shop/products_c/edit_product/edit_product.dart';
 import '../features_authentication/screens/login/login.dart';
 
 class fAppRoute {
@@ -45,7 +45,7 @@ class fAppRoute {
     GetPage(name: fRoutes.createBanner, page: () => const Createbannerscreen(),middlewares: [fRoutesMiddleWare()]),
     GetPage(name: fRoutes.editBanner, page: () => const EditBannerScreens(),middlewares: [fRoutesMiddleWare()]),
 
-    GetPage(name: fRoutes.products, page: () => const ProductScreen(),middlewares: [fRoutesMiddleWare()]),
+    GetPage(name: fRoutes.products, page: () => const ProductsScreen(),middlewares: [fRoutesMiddleWare()]),
     GetPage(name: fRoutes.createProduct, page: () => const CreateProductScreen(),middlewares: [fRoutesMiddleWare()]),
     GetPage(name: fRoutes.editProduct, page: () => const EditProductScreen(),middlewares: [fRoutesMiddleWare()]),
 

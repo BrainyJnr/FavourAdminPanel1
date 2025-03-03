@@ -12,7 +12,7 @@ class OrderDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final order = Get.arguments;
-    //final orderId = Get.parameters['orderId'];
+    final orderId = Get.parameters['orderId'];
     return fSiteTemplate(desktop: OrderDetailDesktop(order: order),tablet: OrderDetailTablet(order: order),mobile: OrderDetailMobile(order: order),);
   }
 }

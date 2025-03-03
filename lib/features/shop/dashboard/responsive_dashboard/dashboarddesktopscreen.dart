@@ -1,13 +1,12 @@
-import 'package:favour_adminpanel/app.dart';
 import 'package:favour_adminpanel/common/styles/frounded_container.dart';
 import 'package:favour_adminpanel/features/shop/dashboard/table/data_table.dart';
 import 'package:favour_adminpanel/features/shop/dashboard/widget/weeklysales_widget.dart';
-import 'package:favour_adminpanel/features/shop/products/controller/product_image_controller.dart';
 import 'package:favour_adminpanel/utilis/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import '../../../../utilis/constants/colors.dart';
+import '../../products_c/controller/product_images_controller.dart';
 import '../widget/fdashboard_card.dart';
 import '../widget/orderstatus_piechart.dart';
 
@@ -16,7 +15,7 @@ class Dashboarddesktopscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProductImageController());
+    final controller = Get.put(ProductImagesController());
     return Scaffold(
         body: SingleChildScrollView(
             child: Padding(
@@ -35,7 +34,7 @@ class Dashboarddesktopscreen extends StatelessWidget {
                               backgroundColor: fColors.primary,
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10))),
-                          onPressed: () => controller.selectedThumbnailImage(),
+                          onPressed: () => controller.selectThumbnailImage(),
                           child: Text("Select Single Image",style: TextStyle(color: Colors.white),)),
                       const SizedBox(
                         height: fSizes.spaceBtwSections,
@@ -47,7 +46,7 @@ class Dashboarddesktopscreen extends StatelessWidget {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10))),
                           onPressed: () =>
-                              controller.selectedMultipleProductImages(),
+                              controller.selectMultipleProductImages(),
                           child: Text("Select Multiple Single Image",style: TextStyle(color: Colors.white))),
                       const SizedBox(
                         height: fSizes.spaceBtwSections,
@@ -58,37 +57,37 @@ class Dashboarddesktopscreen extends StatelessWidget {
                         children: [
                           Expanded(
                               child: fDashboardCard(
-                            stats: 25,
-                            title: "Sales total",
-                            subTitle: '\$356',
-                          )),
+                                stats: 25,
+                                title: "Sales total",
+                                subTitle: '\$356',
+                              )),
                           SizedBox(
                             width: fSizes.spaceBtwItems,
                           ),
                           Expanded(
                               child: fDashboardCard(
-                            stats: 25,
-                            title: "Sales total",
-                            subTitle: '\$356',
-                          )),
+                                stats: 25,
+                                title: "Sales total",
+                                subTitle: '\$356',
+                              )),
                           SizedBox(
                             width: fSizes.spaceBtwItems,
                           ),
                           Expanded(
                               child: fDashboardCard(
-                            stats: 25,
-                            title: "Sales total",
-                            subTitle: '\$356',
-                          )),
+                                stats: 25,
+                                title: "Sales total",
+                                subTitle: '\$356',
+                              )),
                           SizedBox(
                             width: fSizes.spaceBtwItems,
                           ),
                           Expanded(
                               child: fDashboardCard(
-                            stats: 25,
-                            title: "Sales total",
-                            subTitle: '\$356',
-                          )),
+                                stats: 25,
+                                title: "Sales total",
+                                subTitle: '\$356',
+                              )),
                         ],
                       ),
 
@@ -113,7 +112,7 @@ class Dashboarddesktopscreen extends StatelessWidget {
                                 fRoundedContainer(
                                   child: Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "Recent Orders",

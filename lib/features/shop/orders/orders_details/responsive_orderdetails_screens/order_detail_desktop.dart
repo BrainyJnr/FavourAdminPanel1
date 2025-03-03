@@ -1,5 +1,4 @@
 import 'package:favour_adminpanel/common/widgets/breadcrumbs/breadcrumb_with_heading.dart';
-import 'package:favour_adminpanel/features/shop/dashboard/controller/dashboard_controller.dart';
 import 'package:favour_adminpanel/features/shop/orders/orders_details/widgets/customer_info.dart';
 import 'package:favour_adminpanel/features/shop/orders/orders_details/widgets/order_items.dart';
 import 'package:favour_adminpanel/features/shop/orders/orders_details/widgets/order_transaction.dart';
@@ -7,6 +6,7 @@ import 'package:favour_adminpanel/routes/routes.dart';
 import 'package:favour_adminpanel/utilis/constants/sizes.dart';
 import 'package:flutter/material.dart';
 
+import '../../model/order_model.dart';
 import '../widgets/order_info.dart';
 
 class OrderDetailDesktop extends StatelessWidget {
