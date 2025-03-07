@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:favour_adminpanel/features/shop/address/address_model.dart';
+import 'package:favour_adminpanel/features/shop/orders/model/order_model.dart';
 import '../../utilis/constants/enums.dart';
 import '../../utilis/formatters/fformaters.dart';
 
@@ -14,6 +16,8 @@ class UserModel {
   String profilePicture;
   DateTime? createAt;
   DateTime? updatedAt;
+  List<OrderModel>? orders;
+  List<AddressModel>? addresses;
 
   /// Constructor for UserModel
   UserModel({this.id,
@@ -48,7 +52,7 @@ class UserModel {
     String lastName = nameParts.length > 1 ? nameParts[1].toLowerCase() : "";
 
     String camelCaseUsername = "$firstName$lastName";
-    String usernameWithPrefix = "cwt_$camelCaseUsername";
+    String usernameWithPrefix = "$camelCaseUsername";
     return usernameWithPrefix;
   }
 

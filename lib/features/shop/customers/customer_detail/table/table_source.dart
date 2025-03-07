@@ -1,6 +1,7 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:favour_adminpanel/app.dart';
 import 'package:favour_adminpanel/common/styles/frounded_container.dart';
+import 'package:favour_adminpanel/features/shop/customers/customer_detail/controller/customer_detail_controller.dart';
 import 'package:favour_adminpanel/features/shop/dashboard/controller/dashboard_controller.dart';
 import 'package:favour_adminpanel/routes/routes.dart';
 import 'package:favour_adminpanel/utilis/constants/colors.dart';
@@ -14,16 +15,13 @@ import 'package:get/get_core/src/get_main.dart';
 import '../../../orders/model/order_model.dart';
 
 class CustomerOrderRows extends DataTableSource {
+  final controlller = CustomerDetailController.instance;
   @override
   DataRow? getRow(int index) {
-    final order = OrderModel(
-        id: "id",
-        status: OrderStatus.shipped,
-        totalAmount: 33.3,
-        orderDate: DateTime.now(), items: [], shippingCost: 0, taxCost: 0, userid: '');
-    const totalAmount = '4333.3';
+    final order = controlller.filteredCustomerOrders[index];
+    final totalAmount = order.items.fold<double>(0, (previousValue, element) => previousValue + element.price);
     return DataRow2(
-        selected: false,
+        selected: controlller.selectRows[index],
         onTap: () => Get.toNamed(fRoutes.ordersDetails, arguments: order),
         cells: [
           DataCell(Text(
@@ -34,7 +32,7 @@ class CustomerOrderRows extends DataTableSource {
                 .apply(color: fColors.primary),
           )),
           DataCell(Text(order.formattedOrderDate)),
-          const DataCell(Text('${5} Items')),
+          DataCell(Text('${order.items.length} Items')),
           DataCell(fRoundedContainer(
             radius: fSizes.cardRadiusSm,
             padding: EdgeInsets.symmetric(
@@ -48,7 +46,7 @@ class CustomerOrderRows extends DataTableSource {
                   color: fHelperFunctions.getOrderStatusColor(order.status)),
             ),
           )),
-          const DataCell(Text("\$$totalAmount"))
+           DataCell(Text("\$$totalAmount"))
         ]);
   }
 
@@ -56,8 +54,8 @@ class CustomerOrderRows extends DataTableSource {
   bool get isRowCountApproximate => false;
 
   @override
-  int get rowCount => 5;
+  int get rowCount => controlller.filteredCustomerOrders.length;
 
   @override
-  int get selectedRowCount => 0;
+  int get selectedRowCount => controlller.selectRows.where((selected) => selected).length;
 }

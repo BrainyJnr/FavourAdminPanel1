@@ -1,6 +1,9 @@
 import 'package:favour_adminpanel/common/styles/fcircular_image.dart';
+import 'package:favour_adminpanel/features/personalization/contorller/settings_controller.dart';
 import 'package:favour_adminpanel/routes/routes.dart';
+import 'package:favour_adminpanel/utilis/constants/enums.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import '../../../../utilis/constants/colors.dart';
 import '../../../../utilis/constants/image_strings.dart';
@@ -22,12 +25,23 @@ class fSidebar extends StatelessWidget {
           child: Column(
             children: [
               //Image
-              fCircular_Images(
-                width: 100,
-                height: 100,
-                image: fImages.favour,
-                backgroundColor: Colors.transparent,
+              Row(
+                children: [
+                  Obx(() =>
+                 fCircular_Images(
+                  width: 100,
+                  height: 100,
+                  imageType: SettingsController.instance.settings.value.appLogo.isNotEmpty ? ImageType.network : ImageType.asset,
+                  image: SettingsController.instance.settings.value.appLogo.isNotEmpty ?
+                      SettingsController.instance.settings.value.appLogo
+                  : fImages.favour,
+                  backgroundColor: Colors.transparent,
+                ),
               ),
+              Expanded(child: Obx(() => Text(SettingsController.instance.settings.value.appName,
+              style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.ellipsis,
+              )))]),
               const SizedBox(
                 height: fSizes.spaceBtwSections,
               ),

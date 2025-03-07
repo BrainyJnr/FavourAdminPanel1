@@ -33,8 +33,8 @@ class CustomerInfo extends StatelessWidget {
               fRoundedImage(
                 padding: 3,
                 backgroundColor: fColors.primaryBackground,
-                imageType: ImageType.asset,
-                image: fImages.Profile1,
+                imageType: customer.profilePicture.isNotEmpty ? ImageType.network : ImageType.asset,
+                image: customer.profilePicture.isNotEmpty ? customer.profilePicture : fImages.Profile1,
               ),
               const SizedBox(
                 width: fSizes.spaceBtwItems,
@@ -45,13 +45,13 @@ class CustomerInfo extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    "Godwin Chimdike Favour",
+                    customer.fullName,
                     style: Theme.of(context).textTheme.titleSmall,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   ),
-                  const Text(
-                    "godwinchimdikefavour@gmail.com",
+                   Text(
+                    customer.email,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
                   )
@@ -76,7 +76,7 @@ class CustomerInfo extends StatelessWidget {
               ),
               Expanded(
                   child: Text(
-                "GCF",
+                customer.username,
                 style: Theme.of(context).textTheme.titleSmall,
               ))
             ],
@@ -117,7 +117,7 @@ class CustomerInfo extends StatelessWidget {
               ),
               Expanded(
                   child: Text(
-                "+32-2333-23422",
+                customer.phoneNumber,
                 style: Theme.of(context).textTheme.titleSmall,
               ))
             ],
@@ -175,6 +175,10 @@ class CustomerInfo extends StatelessWidget {
                 children: [
                   Text(
                     "Registered",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  Text(
+                    customer.formattedDate,
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                 ],

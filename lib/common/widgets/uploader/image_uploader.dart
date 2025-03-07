@@ -1,5 +1,6 @@
 import 'package:favour_adminpanel/common/styles/fcircular_image.dart';
 import 'package:favour_adminpanel/common/styles/frounded_image.dart';
+import 'package:favour_adminpanel/common/widgets/custom_shapes/container/fcircular_container.dart';
 import 'package:favour_adminpanel/utilis/constants/colors.dart';
 import 'package:favour_adminpanel/utilis/constants/enums.dart';
 import 'package:favour_adminpanel/utilis/constants/sizes.dart';
@@ -24,9 +25,11 @@ class ImageUploader extends StatelessWidget {
     this.bottom = 0,
     this.right = 0,
     this.top = 0,
+    this.loading = false,
   });
 
   final bool circular;
+  final bool loading;
   final String? image;
   final ImageType imageType;
   final double width;
@@ -69,7 +72,13 @@ class ImageUploader extends StatelessWidget {
           Positioned(
             bottom: bottom, // Positioned at the bottom
             right: right,   // Positioned at the right
-            child: fCircularIcon(
+            child: loading
+            ? const fCircular_Container(
+              width: fSizes.xl,
+              height: fSizes.xl,
+              child: CircularProgressIndicator(strokeWidth: 2, backgroundColor: fColors.primary, color: Colors.white,),
+            )
+                : fCircularIcon(
               icon: icon,
               size: fSizes.md,
               color: Colors.white,

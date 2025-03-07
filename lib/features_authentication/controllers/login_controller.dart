@@ -3,6 +3,8 @@ import 'package:favour_adminpanel/common/widgets/loaders/floaders.dart';
 import 'package:favour_adminpanel/common/widgets/manager/network_manager.dart';
 import 'package:favour_adminpanel/data/repositories/authentication.dart';
 import 'package:favour_adminpanel/data/repositories/user/user_repository.dart';
+import 'package:favour_adminpanel/features/personalization/model/settings_model.dart';
+import 'package:favour_adminpanel/features/personalization/repositories/settings_repositories.dart';
 import 'package:favour_adminpanel/features_authentication/controllers/user_controller.dart';
 import 'package:favour_adminpanel/features_authentication/models/user_model.dart';
 import 'package:favour_adminpanel/utilis/constants/enums.dart';
@@ -110,6 +112,10 @@ class LoginController extends GetxController {
               role: AppRole.admin,
               createAt: DateTime.now())
       );
+
+      // Create settings record in the Firestore
+      final settingsRepository = Get.put(SettingsRepository());
+      await settingsRepository.registerSettings(SettingsModel(appLogo: "", appName: "F APP",taxRate: 0, shippingCost: 0));
 
       // Remove Loader
       fFullScreenLoader.stopLoading();

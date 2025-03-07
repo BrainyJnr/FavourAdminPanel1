@@ -12,7 +12,7 @@ class CustomerDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final customer = Get.arguments;
-
+    final customerId = Get.parameters["customerId"];
     return fSiteTemplate(desktop: CustomerDetailDesktopscreen(customer: customer),mobile: CustomerDetailMobilescreen(customer: customer),);
   }
 }

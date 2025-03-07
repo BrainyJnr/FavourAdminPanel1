@@ -1,5 +1,6 @@
 import 'package:favour_adminpanel/common/styles/frounded_container.dart';
 import 'package:favour_adminpanel/common/widgets/uploader/image_uploader.dart';
+import 'package:favour_adminpanel/features/personalization/contorller/settings_controller.dart';
 import 'package:favour_adminpanel/utilis/constants/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ class ImageAndMetaSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = SettingsController.instance;
     return fRoundedContainer(
       padding: const EdgeInsets.symmetric(
         vertical: fSizes.lg,
@@ -23,24 +25,30 @@ class ImageAndMetaSettings extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // User Image
-            const ImageUploader(
-              imageType: ImageType.asset,
-              right: 10,
-              bottom: 20,
-              left: null,
-              width: 200,
-              height: 200,
-              circular: true,
-              icon: Iconsax.camera,
-              image: fImages.Profile1,
+            Obx(
+              () => ImageUploader(
+                imageType: controller.settings.value.appLogo.isNotEmpty ? ImageType.network : ImageType.asset,
+                right: 10,
+                bottom: 20,
+                left: null,
+                width: 200,
+                height: 200,
+                loading: controller.loading.value,
+                circular: true,
+                onIconButtonPressed: () => controller.updateAppLogo(),
+                icon: Iconsax.camera,
+                image: controller.settings.value.appLogo.isNotEmpty ? controller.settings.value.appLogo : fImages.Profile1,
+              ),
             ),
             const SizedBox(
               height: fSizes.spaceBtwItems,
             ),
-            Text(
-                "G-SERVANT",
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
+            Obx(
+              () => Text(
+                  controller.settings.value.appName,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                ),
+            ),
             const SizedBox(
               height: fSizes.spaceBtwSections,
             ),

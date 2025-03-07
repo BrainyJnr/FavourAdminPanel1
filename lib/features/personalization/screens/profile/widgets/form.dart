@@ -1,6 +1,8 @@
 import 'package:favour_adminpanel/common/styles/frounded_container.dart';
+import 'package:favour_adminpanel/features_authentication/controllers/user_controller.dart';
 import 'package:favour_adminpanel/utilis/validators/fvalidators.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
 import '../../../../../utilis/constants/colors.dart';
@@ -11,6 +13,10 @@ class ProfileForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = UserController.instance;
+    controller.firstNameController.text = controller.user.value.firstName;
+    controller.lastNameController.text = controller.user.value.lastName;
+    controller.phoneController.text = controller.user.value.phoneNumber;
     return Column(
       children: [
         fRoundedContainer(
@@ -29,6 +35,7 @@ class ProfileForm extends StatelessWidget {
 
               // First and Last Name
               Form(
+                key: controller.formKey,
                   child: Column(
                 children: [
                   Row(
@@ -36,6 +43,7 @@ class ProfileForm extends StatelessWidget {
                       // First Name
                       Expanded(
                           child: TextFormField(
+                            controller: controller.firstNameController,
                         decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -67,6 +75,7 @@ class ProfileForm extends StatelessWidget {
                       // Last Name
                       Expanded(
                           child: TextFormField(
+                            controller: controller.lastNameController,
                         decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -126,6 +135,7 @@ class ProfileForm extends StatelessWidget {
                             label: Text("Email"),
                             prefixIcon: Icon(Iconsax.forward),
                             enabled: true),
+                            initialValue: UserController.instance.user.value.email,
                       )),
                       const SizedBox(
                         width: fSizes.spaceBtwItems,
@@ -133,6 +143,7 @@ class ProfileForm extends StatelessWidget {
                       // Last Name
                       Expanded(
                           child: TextFormField(
+                            controller: controller.phoneController,
                         decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -166,17 +177,22 @@ class ProfileForm extends StatelessWidget {
               ),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        side: BorderSide(color: Colors.white),
-                        backgroundColor: fColors.primary,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))),
-                    onPressed: () {},
-                    child: Text(
-                      "Update Profile",
-                      style: TextStyle(color: Colors.white),
-                    )),
+                child: Obx(
+                  () => ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          side: BorderSide(color: Colors.white),
+                          backgroundColor: fColors.primary,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10))),
+                      onPressed: () => controller.loading.value ? () {} :
+                      controller.updateUserInformation(),
+                      child: controller.loading.value ?
+                          const CircularProgressIndicator(color: Colors.white,strokeWidth: 2,)
+                   : const Text(
+                        "Update Profile",
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ),
               )
             ],
           ),
