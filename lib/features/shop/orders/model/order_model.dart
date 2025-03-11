@@ -14,7 +14,7 @@ class OrderModel {
   final double shippingCost;
   final double taxCost;
   final String paymentMethod;
-  final AddressModel? shippingAddress;
+  final AddressModel? address;
   final AddressModel? billingAddress;
   final DateTime orderDate;
   final DateTime? deliveryDate;
@@ -33,7 +33,7 @@ class OrderModel {
     required this.orderDate,
     this.paymentMethod = "Cash On Delivery",
     this.billingAddress,
-    this.shippingAddress,
+    this.address,
     this.deliveryDate,
     this.billingAddressSameAsShipping = true,
   });
@@ -67,7 +67,7 @@ class OrderModel {
       "userid": userid, // ✅ Fixed key (was "userid")
       "status": status.toString(),
       "totalAmount": totalAmount,
-      "shippingAddress": shippingAddress?.toJson(),
+      "address": address?.toJson(),
       "shippingCost": shippingCost,
       "taxCost": taxCost,
       "billingAddress": billingAddress?.toJson(),
@@ -97,8 +97,8 @@ class OrderModel {
       billingAddress: data.containsKey("billingAddress")
           ? AddressModel.fromMap(data["billingAddress"] as Map<String, dynamic>)
           : AddressModel.empty(),
-      shippingAddress: data.containsKey("shippingAddress")
-          ? AddressModel.fromMap(data["shippingAddress"] as Map<String, dynamic>)
+      address: data.containsKey("address")
+          ? AddressModel.fromMap(data["address"] as Map<String, dynamic>)
           : AddressModel.empty(),
       billingAddressSameAsShipping: data.containsKey("billingAddressSameAsShipping")
           ? data["billingAddressSameAsShipping"] as bool

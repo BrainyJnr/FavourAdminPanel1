@@ -5,8 +5,10 @@ import 'package:favour_adminpanel/utilis/constants/sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:iconsax/iconsax.dart';
 import '../../../../utilis/constants/colors.dart';
 import '../../products_c/controller/product_images_controller.dart';
+import '../controller/dashboard_controller.dart';
 import '../widget/fdashboard_card.dart';
 import '../widget/orderstatus_piechart.dart';
 
@@ -15,7 +17,7 @@ class Dashboarddesktopscreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ProductImagesController());
+    final controller = Get.put(DashboardController());
     return Scaffold(
         body: SingleChildScrollView(
             child: Padding(
@@ -28,26 +30,6 @@ class Dashboarddesktopscreen extends StatelessWidget {
                         "Dashboard",
                         style: Theme.of(context).textTheme.headlineLarge,
                       ),
-                      OutlinedButton(
-                          style: ElevatedButton.styleFrom(
-                              side: BorderSide(color: Colors.white),
-                              backgroundColor: fColors.primary,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10))),
-                          onPressed: () => controller.selectThumbnailImage(),
-                          child: Text("Select Single Image",style: TextStyle(color: Colors.white),)),
-                      const SizedBox(
-                        height: fSizes.spaceBtwSections,
-                      ),
-                      OutlinedButton(
-                          style: ElevatedButton.styleFrom(
-                              side: BorderSide(color: Colors.white),
-                              backgroundColor: fColors.primary,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10))),
-                          onPressed: () =>
-                              controller.selectMultipleProductImages(),
-                          child: Text("Select Multiple Single Image",style: TextStyle(color: Colors.white))),
                       const SizedBox(
                         height: fSizes.spaceBtwSections,
                       ),
@@ -56,38 +38,62 @@ class Dashboarddesktopscreen extends StatelessWidget {
                       Row(
                         children: [
                           Expanded(
-                              child: fDashboardCard(
-                                stats: 25,
-                                title: "Sales total",
-                                subTitle: '\$356',
-                              )),
+                              child: Obx(
+                            () => fDashboardCard(
+                              headingIcon: Iconsax.note,
+                              headingIconBgColor: Colors.blue.withOpacity(0.1),
+                              headingIconColor: Colors.blue,
+                              stats: 25,
+                              title: "Sales total",
+                              subTitle:
+                                  '\$${controller.orderController.allItems.fold(0.0, (previousValue, element) => previousValue + element.totalAmount).toStringAsFixed(2)}',
+                            ),
+                          )),
                           SizedBox(
                             width: fSizes.spaceBtwItems,
                           ),
                           Expanded(
-                              child: fDashboardCard(
-                                stats: 25,
-                                title: "Sales total",
-                                subTitle: '\$356',
-                              )),
+                              child: Obx(
+                            () => fDashboardCard(
+                                headingIcon: Iconsax.external_drive,
+                                headingIconBgColor: Colors.green.withOpacity(0.1),
+                                headingIconColor: Colors.green,
+                                stats: 15,
+                                title: "Average Order Value",
+                                subTitle:
+                                    '\$${(controller.orderController.allItems.fold(0.0, (previousValue, element) => previousValue + element.totalAmount) / controller.orderController.allItems.length).toStringAsFixed(2)}'),
+                          )),
                           SizedBox(
                             width: fSizes.spaceBtwItems,
                           ),
                           Expanded(
-                              child: fDashboardCard(
-                                stats: 25,
-                                title: "Sales total",
-                                subTitle: '\$356',
-                              )),
+                              child: Obx(
+                            () => fDashboardCard(
+                              headingIcon: Iconsax.box,
+                              headingIconBgColor: Colors.deepPurple.withOpacity(0.1),
+                              headingIconColor:
+                                  Colors.deepPurple,
+                              stats: 44,
+                              title: "Total Orders",
+                              subTitle:
+                                  '\$${controller.orderController.allItems.length}',
+                            ),
+                          )),
                           SizedBox(
                             width: fSizes.spaceBtwItems,
                           ),
                           Expanded(
-                              child: fDashboardCard(
-                                stats: 25,
-                                title: "Sales total",
-                                subTitle: '\$356',
-                              )),
+                              child: Obx(
+                            () => fDashboardCard(
+                              headingIcon: Iconsax.user,
+                              headingIconBgColor: Colors.deepOrange.withOpacity(0.1),
+                              headingIconColor:
+                                  Colors.deepOrange,
+                              stats: 2,
+                              title: "Visitors",
+                              subTitle: controller.customerController.allItems.length.toString(),
+                            ),
+                          )),
                         ],
                       ),
 
@@ -112,7 +118,7 @@ class Dashboarddesktopscreen extends StatelessWidget {
                                 fRoundedContainer(
                                   child: Column(
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         "Recent Orders",

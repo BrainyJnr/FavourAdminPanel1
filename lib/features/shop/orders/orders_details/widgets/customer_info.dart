@@ -133,12 +133,13 @@ class CustomerInfoOrder extends StatelessWidget {
                   .textTheme
                   .headlineMedium,),
                SizedBox(height: fSizes.spaceBtwSections,),
-              Text(order.shippingAddress !=null ? order.shippingAddress!.name : "", style: Theme
+              Text(
+                order.address !=null ? order.address!.name : "", style: Theme
                   .of(context)
                   .textTheme
                   .titleSmall,),
                SizedBox(height: fSizes.spaceBtwSections / 2,),
-              Text(order.shippingAddress != null ? order.shippingAddress!.toString() : "", style: Theme
+              Text(order.address != null ? order.address!.toString() : "", style: Theme
                   .of(context)
                   .textTheme
                   .titleSmall,),
@@ -160,12 +161,12 @@ class CustomerInfoOrder extends StatelessWidget {
                   .textTheme
                   .headlineMedium,),
               const SizedBox(height: fSizes.spaceBtwSections,),
-              Text(order.billingAddressSameAsShipping  ? order.shippingAddress!.name : order.billingAddress!.name, style: Theme
+              Text(order.billingAddressSameAsShipping  ? order.address!.name : order.billingAddress!.name, style: Theme
                   .of(context)
                   .textTheme
                   .titleSmall,),
               const SizedBox(height: fSizes.spaceBtwSections / 2,),
-              Text(order.billingAddressSameAsShipping ? order.shippingAddress!.toString() : order.billingAddress!.toString(), style: Theme
+              Text(order.billingAddressSameAsShipping ? order.address!.toString() : order.billingAddress!.toString(), style: Theme
                   .of(context)
                   .textTheme
                   .titleSmall,),

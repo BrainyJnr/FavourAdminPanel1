@@ -1,62 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:favour_adminpanel/data/abstract/base_data_table_controller.dart';
+import 'package:favour_adminpanel/features/shop/customers/controller/customer_controller.dart';
+import 'package:favour_adminpanel/features/shop/orders/controller/order_controller.dart';
 import 'package:favour_adminpanel/utilis/constants/enums.dart';
 import 'package:favour_adminpanel/utilis/helpers/helper_function.dart';
 import 'package:get/get.dart';
 
 import '../../orders/model/order_model.dart';
 
-class DashboardController extends GetxController {
+class DashboardController extends fBaseController<OrderModel> {
   static DashboardController get instance => Get.find();
+
+  final orderController = Get.put(OrderController());
+  final customerController = Get.put(CustomerController());
 
   final RxList<double> weeklySales = <double>[].obs;
   final RxMap<OrderStatus, int> orderStatusData = <OrderStatus, int>{}.obs;
   final RxMap<OrderStatus, double> totalAmounts = <OrderStatus, double>{}.obs;
 
   // -- Order
-  static final List<OrderModel> orders = [
-    OrderModel(
-        id: "she433",taxCost: 0,shippingCost: 0,
-        status: OrderStatus.processing,
-        totalAmount: 245,
-        orderDate: DateTime(2024, 5, 20),
-        deliveryDate: DateTime(2024, 5, 20),
-        items: [], userid: ''),
-    OrderModel(
-        id: "uth433",taxCost: 0,shippingCost: 0,
-        status: OrderStatus.shipped,
-        totalAmount: 245,
-        orderDate: DateTime(2024, 11, 24),
-        deliveryDate: DateTime(2024, 11, 24),
-        items: [], userid: ''),
-    OrderModel(
-        id: "yyy433",taxCost: 0,shippingCost: 0,
-        status: OrderStatus.delivered,
-        totalAmount: 245,
-        orderDate: DateTime(2024, 11, 25),
-        deliveryDate: DateTime(2024, 11, 25),
-        items: [], userid: ''),
-    OrderModel(
-        id: "gcf433",taxCost: 0,shippingCost: 0,
-        status: OrderStatus.delivered,
-        totalAmount: 200,
-        orderDate: DateTime(2024, 11, 27),
-        deliveryDate: DateTime(2024, 11, 27),
-        items: [], userid: ''),
-    OrderModel(
-        id: "cw2e03",taxCost: 0,shippingCost: 0,
-        status: OrderStatus.delivered,
-        totalAmount: 245,
-        orderDate: DateTime(2024, 11, 26),
-        deliveryDate: DateTime(2024, 11, 26),
-        items: [], userid: ''),
-  ];
 
-  @override
-  void onInit() {
-    _calculateWeeklySales();
-    _calculateOrderStatusData();
-    super.onInit();
-  }
 
   // Calculate weekly roles
   void _calculateWeeklySales() {
@@ -67,20 +30,20 @@ class DashboardController extends GetxController {
     final now = DateTime.now();
     final weekStart = now.subtract(Duration(days: now.weekday - 1));
 
-    for (var order in orders) {
+    for (var order in orderController.allItems) {
       // Check if the order is within the week range
-      if (order.orderDate.isAfter(weekStart) &&
-          order.orderDate.isBefore(weekStart.add(Duration(days: 7)))) {
-        // Map weekday (1-7) to index (0-6)
-        final index = (order.orderDate.weekday - 1) % 7;
+      final DateTime orderWeekStart = fHelperFunctions.getStartOfWeek(
+          order.orderDate);
 
-        // Accumulate the total amount for the day
+      if (orderWeekStart.isBefore(DateTime.now()) &&
+          orderWeekStart.add(const Duration(days: 7)).isAfter(DateTime.now())) {
+        int index = (order.orderDate.weekday - 1) % 7;
+
+        index = index < 0 ? index + 7 : index;
+
         weeklySales[index] += order.totalAmount;
       }
     }
-
-    // Debug the result
-    print('Weekly Sales: $weeklySales');
   }
 
   void _calculateOrderStatusData() {
@@ -90,7 +53,7 @@ class DashboardController extends GetxController {
     // Map to store total amounts for each status
     totalAmounts.value = {for (var status in OrderStatus.values) status: 0.0};
 
-    for (var order in orders) {
+    for (var order in orderController.allItems) {
       // count orders
       final status = order.status;
       orderStatusData[status] = (orderStatusData[status] ?? 0) + 1;
@@ -118,6 +81,34 @@ class DashboardController extends GetxController {
       default:
         return "Unknown";
     }
+  }
+
+  @override
+  bool containsSearchQuery(OrderModel item, String query) => false;
+
+  @override
+  Future<void> deleteItem(OrderModel item) async {
+  }
+
+  @override
+  Future<List<OrderModel>> fetchItems() async {
+    // Fetch Orders if empty
+    if(orderController.allItems.isEmpty) {
+      await orderController.fetchItems();
+    }
+
+    // Fetch Customers if empty
+    if(customerController.allItems.isEmpty) {
+      await customerController.fetchItems();
+    }
+
+    // Calculate weekly sales
+    _calculateWeeklySales();
+
+    // Calculate Order Status counts
+    _calculateOrderStatusData();
+
+    return orderController.allItems;
   }
 }
 

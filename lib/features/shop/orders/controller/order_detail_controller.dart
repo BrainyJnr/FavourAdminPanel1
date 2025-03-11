@@ -1,5 +1,6 @@
 import 'package:favour_adminpanel/common/widgets/loaders/floaders.dart';
 import 'package:favour_adminpanel/data/repositories/user/user_repository.dart';
+import 'package:favour_adminpanel/features/shop/address/address_model.dart';
 import 'package:favour_adminpanel/features/shop/orders/model/order_model.dart';
 import 'package:favour_adminpanel/features_authentication/models/user_model.dart';
 import 'package:get/get.dart';
@@ -9,6 +10,7 @@ class OrderDetailController extends GetxController {
 
   RxBool loading = true.obs;
   Rx<OrderModel> order = OrderModel.empty().obs;
+  Rx<AddressModel> address = AddressModel.empty().obs;
   Rx<UserModel> customer = UserModel.empty().obs;
 
   /// -- Load while loading categories
